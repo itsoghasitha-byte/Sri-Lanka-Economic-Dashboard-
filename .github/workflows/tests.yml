@@ -27,7 +27,19 @@ jobs:
       - name: Compile Python files
         run: python -m compileall -q app.py data_utils.py api tests
       - name: Check frontend JavaScript syntax
-        run: node --check script.js && node --check api-client.js
+        run: node --check script.js && node --check api-client.js && node --check public/script.js && node --check public/api-client.js
+      - name: Validate Vercel configuration and frontend assets
+        run: |
+          python -c "import json; json.load(open('vercel.json'))"
+          test -f index.py
+          test -f public/index.html
+          test -f public/styles.css
+          test -f public/script.js
+          test -f public/api-client.js
+      - name: Smoke-test FastAPI import
+        env:
+          PYTHONPATH: .
+        run: python -c "from api.main import app; assert app.title; print(app.title)"
       - name: Run unit, API and Streamlit app tests
         env:
           PYTHONPATH: .
