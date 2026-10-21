@@ -46,6 +46,33 @@ class ResearchRecord(BaseModel):
 class ResearchQuestion(BaseModel):
     question: str = Field(min_length=5, max_length=1200)
 
+class KnowledgeUpdateQuestion(BaseModel):
+    topic: str = Field(min_length=3, max_length=180)
+    focus: str = Field(default="latest official facts, context, trends and risks", max_length=400)
+
+def _slugify(value: str) -> str:
+    import re
+    return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")[:100].strip("-") or "sri-lanka-topic"
+
+def _extract_urls(text: str) -> list[str]:
+    import re
+    found = re.findall(r"https?://[^\s)\]>]+", text)
+    result = []
+    for url in found:
+        url = url.rstrip(".,;:")
+        if url not in result:
+            result.append(url)
+    return result[:30]
+
+def _json_value(value: Any):
+    import json
+    if isinstance(value, str):
+        try:
+            return json.loads(value)
+        except Exception:
+            return []
+    return value if value is not None else []
+
 _request_times = defaultdict(deque)
 
 def _allow_research_request(client_ip: str) -> bool:
@@ -99,6 +126,14 @@ def init_db():
             conn.execute("""CREATE TABLE IF NOT EXISTS research_history (
                 id BIGSERIAL PRIMARY KEY, question TEXT NOT NULL, answer TEXT NOT NULL,
                 sources JSONB NOT NULL DEFAULT '[]'::jsonb, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS knowledge_pages (
+                id BIGSERIAL PRIMARY KEY, slug TEXT NOT NULL UNIQUE, title TEXT NOT NULL,
+                content TEXT NOT NULL, sources JSONB NOT NULL DEFAULT '[]'::jsonb,
+                updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), revision INTEGER NOT NULL DEFAULT 1)""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS knowledge_revisions (
+                id BIGSERIAL PRIMARY KEY, page_slug TEXT NOT NULL, title TEXT NOT NULL,
+                content TEXT NOT NULL, sources JSONB NOT NULL DEFAULT '[]'::jsonb,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())""")
         else:
             conn.execute("""CREATE TABLE IF NOT EXISTS indicators (
                 id INTEGER PRIMARY KEY AUTOINCREMENT, period TEXT NOT NULL, indicator_key TEXT NOT NULL,
@@ -109,6 +144,14 @@ def init_db():
             conn.execute("""CREATE TABLE IF NOT EXISTS research_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT NOT NULL, answer TEXT NOT NULL,
                 sources TEXT NOT NULL DEFAULT '[]', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS knowledge_pages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT NOT NULL UNIQUE, title TEXT NOT NULL,
+                content TEXT NOT NULL, sources TEXT NOT NULL DEFAULT '[]',
+                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, revision INTEGER NOT NULL DEFAULT 1)""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS knowledge_revisions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, page_slug TEXT NOT NULL, title TEXT NOT NULL,
+                content TEXT NOT NULL, sources TEXT NOT NULL DEFAULT '[]',
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)""")
         count = _execute(conn, pg, "SELECT COUNT(*) AS n FROM indicators").fetchone()
         if int(count["n"]) == 0:
             for row in DEMO_ROWS:
