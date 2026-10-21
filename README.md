@@ -8,21 +8,20 @@ A portfolio project built with **Python, Streamlit, Pandas, Plotly and pytest**.
 - Interactive Plotly chart for comparing the two indicators over time.
 - Official data table and CSV download.
 - CSV uploader for exploring other public statistics.
-- Validation helpers and automated pytest tests.
+- CSV validation helpers and automated pytest tests.
 - GitHub Actions workflow for running tests on pushes and pull requests.
 
 ## Data sources
 
-The dashboard's bundled CSV contains these published figures from the **Department of Census and Statistics (DCS), Sri Lanka**:
+The bundled CSV contains labour-market figures published by the **Department of Census and Statistics (DCS), Sri Lanka**:
 
 - **2025 annual:** labour-force participation rate 49.4%; unemployment rate 3.9%.
 - **2026 Q1:** labour-force participation rate 49.2%; unemployment rate 3.7%.
+- **2026 Q2:** labour-force participation rate 50.0%; unemployment rate 4.0%.
 
-Sources:
-- [DCS Labour Force Survey quarterly reports](https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/)
-- [DCS official website](https://www.statistics.gov.lk/en)
+Sources: [DCS annual labour-force bulletins](https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/) and [DCS quarterly labour-force reports](https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/). The DCS website lists these figures in its official releases.
 
-The CSV records the source for each observation. These are published figures, not a live data feed; update the CSV when new official reports are released. Values and labels should be checked against the linked publications before reuse.
+These are published observations, not a live data feed. The dashboard displays the latest period included in the CSV; update the CSV when new official releases become available. The automated tests check data structure and validation, but do not independently verify figures against source publications.
 
 ## Run locally
 
