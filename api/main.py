@@ -8,7 +8,7 @@ import os
 import sqlite3
 import time
 from collections import defaultdict, deque
-from contextlib import contextmanager
+from contextlib import asynccontextmanager, contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -29,7 +29,12 @@ DEMO_ROWS = [
     ("2026 Q2", "unemployment_rate", "Unemployment rate", 4.0, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/", "bundled_sample"),
 ]
 
-app = FastAPI(title="Lanka Intel API", version="1.0.0", description="Source-aware economic indicator API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+app = FastAPI(title="Lanka Intel API", version="1.0.0", description="Source-aware economic indicator API", lifespan=lifespan)
 allowed_origins = [x.strip() for x in os.getenv("CORS_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000").split(",") if x.strip()]
 app.add_middleware(CORSMiddleware, allow_origins=allowed_origins, allow_credentials=False, allow_methods=["GET", "POST", "OPTIONS"], allow_headers=["Content-Type", "Authorization"])
 
@@ -110,10 +115,6 @@ def init_db():
                 _execute(conn, pg, """INSERT INTO indicators
                     (period,indicator_key,indicator,value,unit,category,source,source_url,status)
                     VALUES (?,?,?,?,?,?,?,?,?)""", row)
-
-@app.on_event("startup")
-def startup():
-    init_db()
 
 @app.get("/health")
 def health():
