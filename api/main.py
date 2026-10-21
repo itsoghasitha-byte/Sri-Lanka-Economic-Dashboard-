@@ -146,30 +146,6 @@ def list_indicators(q: str = Query(default="", max_length=120), category: str = 
     except Exception as exc:
         raise HTTPException(status_code=503, detail="Unable to query indicator database") from exc
 
-@app.post("/api/research", status_code=201)
-def save_research(record: ResearchRecord):
-    """Persist a research record; intended for trusted server-side callers."""
-    import json
-    for source in record.sources:
-        if not source.startswith(("https://", "http://")):
-            raise HTTPException(status_code=422, detail="Every source must be an HTTP(S) URL")
-    try:
-        with connection() as (conn, pg):
-            if pg:
-                saved = conn.execute(
-                    "INSERT INTO research_history (question,answer,sources) VALUES (%s,%s,%s::jsonb) RETURNING id",
-                    (record.question.strip(), record.answer.strip(), json.dumps(record.sources)),
-                ).fetchone()
-            else:
-                cur = conn.execute(
-                    "INSERT INTO research_history (question,answer,sources) VALUES (?,?,?)",
-                    (record.question.strip(), record.answer.strip(), json.dumps(record.sources)),
-                )
-                saved = {"id": cur.lastrowid}
-        return {"saved": True, "id": saved["id"] if saved else None}
-    except Exception as exc:
-        raise HTTPException(status_code=503, detail="Unable to save research record") from exc
-
 @app.post("/api/research/ask")
 def ask_research(payload: ResearchQuestion, request: Request):
     """Run web-grounded AI research with the provider key kept on the server."""
