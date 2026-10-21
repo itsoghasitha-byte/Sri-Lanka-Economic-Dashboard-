@@ -1,59 +1,55 @@
-# Sri Lanka Economic Snapshot Dashboard
+# Sri Lanka Economic Intelligence
 
-A portfolio project built with **Python, Streamlit, Pandas, Plotly and pytest**.
+An AI-assisted Sri Lankan economic research and data dashboard built with **Python, Streamlit, FastAPI, PostgreSQL, Pandas, Plotly and pytest**.
 
 ## Features
 
-- KPI cards for labour-force participation and unemployment.
-- Interactive Plotly chart for comparing the two indicators over time.
-- Official data table and CSV download.
-- CSV uploader for exploring other public statistics.
-- CSV validation helpers and automated pytest tests.
-- AI research studio for web-grounded analysis of Sri Lankan finance, real estate, development and India–Sri Lanka business cooperation (requires an OpenAI API key).
-- FastAPI backend with database-backed indicator search, research history, PostgreSQL/Supabase support and a secure server-side AI research endpoint.
-- Holographic static website with a live API explorer and AI research interface.
-- Frontend security checks and API route tests in GitHub Actions.
+- Labour-market KPI cards and interactive time-series visualisations.
+- CSV data explorer, downloads, upload validation and automated data-quality checks.
+- AI research studio for web-grounded analysis of Sri Lankan finance, real estate, development and India–Sri Lanka business cooperation (requires a server-side OpenAI API key).
+- FastAPI endpoints for indicator search, research history and AI research.
+- Searchable AI-generated knowledge pages with source links and revision history.
+- PostgreSQL support, with SQLite for local development.
+- Holographic static website, API explorer and GitHub Actions test workflow.
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for the Supabase, Render, GitHub Pages and secret configuration walkthrough. Hosted services still require setup in your own provider accounts.
-- GitHub Actions workflow for running tests on pushes and pull requests.
+## Official labour-market data
 
-## Data sources
+The bundled data/labour_indicators.csv contains these observations published by Sri Lanka's **Department of Census and Statistics (DCS)**:
 
-The bundled CSV contains labour-market figures published by the **Department of Census and Statistics (DCS), Sri Lanka**:
+| Period | Labour-force participation | Unemployment |
+|---|---:|---:|
+| 2025 annual | 49.4% | 3.9% |
+| 2026 Q1 | 49.2% | 3.7% |
+| 2026 Q2 | 50.0% | 4.0% |
 
-- **2025 annual:** labour-force participation rate 49.4%; unemployment rate 3.9%.
-- **2026 Q1:** labour-force participation rate 49.2%; unemployment rate 3.7%.
-- **2026 Q2:** labour-force participation rate 50.0%; unemployment rate 4.0%.
+The values above are cross-checked against DCS official releases and landing-page summaries. See [DCS labour-force bulletins](https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/) and [DCS quarterly reports](https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/). Source directories can change; the CSV records the relevant official landing page for each observation. The review date and limitations are documented in [data/SOURCES.md](data/SOURCES.md).
 
-Sources: [DCS annual labour-force bulletins](https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/) and [DCS quarterly labour-force reports](https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/). The DCS website lists these figures in its official releases.
+**Freshness limitation:** this is a bundled snapshot, not a live data feed. New official releases do not automatically change the CSV. Update data only after checking the corresponding primary publication. Automated tests check expected periods, values, source domains and data shape; they do not download publications or independently reproduce the source tables.
 
-These are published observations, not a live data feed. The dashboard displays the latest period included in the CSV; update the CSV when new official releases become available. The automated tests check data structure and validation, but do not independently verify figures against source publications.
+## AI research and knowledge base
 
-## AI research setup
+The API can use the OpenAI Responses API with web search to answer research questions and create or refresh knowledge pages. Pages are saved with source URLs and revision history. AI-generated content can be incomplete or incorrect, so users should verify important claims against linked primary sources.
 
-The AI research studio uses the OpenAI Responses API with web search to research current public reports and provide source-linked analysis. To enable it, create an OpenAI API key and configure it as an environment variable named OPENAI_API_KEY, or add it in your Streamlit hosting provider's Secrets settings. Never commit the key to GitHub. The optional OPENAI_MODEL variable can override the default model.
-
-Without a configured API key, the rest of the dashboard still works, but AI research requests will show setup instructions. AI output is not investment, legal or property advice; verify important claims against primary sources.
+AI features require OPENAI_API_KEY configured **server-side**. Never place the key in browser JavaScript or commit it to the repository. Without the key, AI endpoints return a configuration error; non-AI dashboard functionality remains available.
 
 ## Run locally
 
 Python 3.10 or newer is recommended.
 
-```bash
-python -m venv .venv
-```
+    python -m venv .venv
+    pip install -r requirements.txt
+    streamlit run app.py
 
-Activate the environment, then install dependencies and start the app:
+The API can be run separately with:
 
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
+    uvicorn api.main:app --reload
 
-## Run tests
+## Tests
 
-```bash
-pytest -q
-```
+    pytest -q
 
-GitHub Actions runs the tests automatically on pushes and pull requests.
+GitHub Actions compiles Python, checks JavaScript syntax and runs the automated test suite on pushes and pull requests.
+
+## Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for database, API, frontend and secret configuration. Hosted services must be provisioned in the relevant provider accounts; a GitHub commit alone does not deploy the application. The premium frontend/API work is currently on the feature/premium-economic-website branch until merged.
