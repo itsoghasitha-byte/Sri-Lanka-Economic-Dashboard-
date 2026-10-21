@@ -81,3 +81,59 @@ def test_ai_endpoint_uses_server_key_and_saves_history(monkeypatch, tmp_path):
 def test_ai_endpoint_rejects_too_short_questions(monkeypatch, tmp_path):
     _, client = make_client(monkeypatch, tmp_path)
     assert client.post("/api/research/ask", json={"question": "bad"}).status_code == 422
+
+
+def test_knowledge_base_search_starts_empty(monkeypatch, tmp_path):
+    _, client = make_client(monkeypatch, tmp_path)
+    assert client.get("/api/knowledge/pages").status_code == 200
+    assert client.get("/api/knowledge/pages").json()["count"] == 0
+    assert client.get("/api/knowledge/pages/missing-topic").status_code == 404
+
+
+def test_knowledge_update_requires_server_key(monkeypatch, tmp_path):
+    _, client = make_client(monkeypatch, tmp_path)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    response = client.post("/api/knowledge/update", json={"topic": "Sri Lanka inflation"})
+    assert response.status_code == 503
+    assert "not configured" in response.json()["detail"]
+
+
+def test_knowledge_update_creates_revision_and_refreshes_page(monkeypatch, tmp_path):
+    import sys
+    from types import SimpleNamespace
+
+    _, client = make_client(monkeypatch, tmp_path)
+    monkeypatch.setenv("OPENAI_API_KEY", "test-server-key")
+    calls = {"count": 0}
+
+    class FakeResponses:
+        def create(self, **kwargs):
+            calls["count"] += 1
+            return SimpleNamespace(output_text=(
+                "Updated findings: official inflation information should be checked against primary releases. "
+                "Source: https://www.cbsl.gov.lk/ and https://www.statistics.gov.lk/"
+                " Revision " + str(calls["count"])
+            ))
+
+    class FakeClient:
+        def __init__(self, api_key):
+            assert api_key == "test-server-key"
+            self.responses = FakeResponses()
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeClient))
+    first = client.post("/api/knowledge/update", json={"topic": "Sri Lanka inflation"})
+    assert first.status_code == 200
+    assert first.json()["revision"] == 1
+    assert "https://www.cbsl.gov.lk/" in first.json()["sources"]
+
+    second = client.post("/api/knowledge/update", json={"topic": "Sri Lanka inflation"})
+    assert second.status_code == 200
+    assert second.json()["revision"] == 2
+
+    listing = client.get("/api/knowledge/pages?q=inflation").json()
+    assert listing["count"] == 1
+    assert listing["data"][0]["revision"] == 2
+
+    page = client.get("/api/knowledge/pages/sri-lanka-inflation")
+    assert page.status_code == 200
+    assert len(page.json()["history"]) == 2
