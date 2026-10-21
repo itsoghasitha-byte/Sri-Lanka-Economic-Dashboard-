@@ -21,12 +21,12 @@ ROOT = Path(__file__).resolve().parents[1]
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 SQLITE_PATH = Path(os.getenv("SQLITE_PATH", str(ROOT / "data" / "economic_intel.db")))
 DEMO_ROWS = [
-    ("2025", "participation_rate", "Labour-force participation", 49.4, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/", "bundled_sample"),
-    ("2025", "unemployment_rate", "Unemployment rate", 3.9, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/", "bundled_sample"),
-    ("2026 Q1", "participation_rate", "Labour-force participation", 49.2, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/", "bundled_sample"),
-    ("2026 Q1", "unemployment_rate", "Unemployment rate", 3.7, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/", "bundled_sample"),
-    ("2026 Q2", "participation_rate", "Labour-force participation", 50.0, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/", "bundled_sample"),
-    ("2026 Q2", "unemployment_rate", "Unemployment rate", 4.0, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/", "bundled_sample"),
+    ("2025", "participation_rate", "Labour-force participation", 49.4, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/", "official_snapshot"),
+    ("2025", "unemployment_rate", "Unemployment rate", 3.9, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/", "official_snapshot"),
+    ("2026 Q1", "participation_rate", "Labour-force participation", 49.2, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/", "official_snapshot"),
+    ("2026 Q1", "unemployment_rate", "Unemployment rate", 3.7, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/", "official_snapshot"),
+    ("2026 Q2", "participation_rate", "Labour-force participation", 50.0, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/", "official_snapshot"),
+    ("2026 Q2", "unemployment_rate", "Unemployment rate", 4.0, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/", "official_snapshot"),
 ]
 
 @asynccontextmanager
