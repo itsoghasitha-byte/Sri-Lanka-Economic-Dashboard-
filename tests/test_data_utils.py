@@ -1,4 +1,5 @@
 from io import StringIO
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -9,8 +10,8 @@ from data_utils import DataValidationError, calculate_change, load_csv, validate
 def valid_labour_df():
     return pd.DataFrame({
         "Period": ["2025 annual", "2026 Q1"],
-        "Labour force participation (%)": [49.4, 50.0],
-        "Unemployment (%)": [3.9, 4.0],
+        "Labour force participation (%)": [49.4, 49.2],
+        "Unemployment (%)": [3.9, 3.7],
     })
 
 
@@ -64,3 +65,15 @@ def test_calculate_change_ignores_missing_values():
 def test_calculate_change_rejects_all_missing_values():
     with pytest.raises(DataValidationError):
         calculate_change(pd.Series([None, None]))
+
+
+def test_official_labour_csv_loads_and_values_are_in_range():
+    csv_path = Path(__file__).resolve().parents[1] / "data" / "labour_indicators.csv"
+    with csv_path.open("r", encoding="utf-8") as csv_file:
+        df = validate_labour_data(load_csv(csv_file))
+
+    assert df["Period"].tolist() == ["2025 Annual", "2026 Q1"]
+    assert df["Labour force participation (%)"].between(0, 100).all()
+    assert df["Unemployment (%)"].between(0, 100).all()
+    assert df["Labour force participation (%)"].tolist() == [49.4, 49.2]
+    assert df["Unemployment (%)"].tolist() == [3.9, 3.7]
