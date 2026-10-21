@@ -13,9 +13,9 @@ st.caption("Sri Lankan labour-market indicators from official Department of Cens
 DATA_FILE = Path(__file__).parent / "data" / "labour_indicators.csv"
 SOURCE_TEXT = (
     "Source: Department of Census and Statistics, Sri Lanka Labour Force Survey "
-    "(2025 Annual Bulletin and 1st Quarter 2026 report)."
+    "(2025 Annual Bulletin, 1st Quarter 2026 report and 2nd Quarter 2026 bulletin)."
 )
-DCS_URL = "https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/"
+DCS_URL = "https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/"
 
 try:
     with DATA_FILE.open("r", encoding="utf-8") as csv_file:
@@ -54,7 +54,7 @@ with left:
     )
     st.plotly_chart(fig, use_container_width=True)
     st.caption(SOURCE_TEXT)
-    st.markdown(f"[View official DCS labour-force reports]({DCS_URL})")
+    st.markdown(f"[View official DCS labour-force bulletins]({DCS_URL})")
 
 with right:
     st.subheader("Official data table")
