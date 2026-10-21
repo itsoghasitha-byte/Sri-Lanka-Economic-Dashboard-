@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
+  <script src="api-client.js" defer></script>
 </head>
 <body>
   <div class="ambient ambient-a" aria-hidden="true"></div>
@@ -26,6 +27,7 @@
     <nav id="site-nav" class="nav">
       <a href="#overview">Overview</a>
       <a href="#platform">Platform</a>
+      <a href="#live-explorer">Live explorer</a>
       <a href="#sources">Data sources</a>
       <a class="nav-cta" href="https://github.com/itsoghasitha-byte/Sri-Lanka-Economic-Dashboard-" target="_blank" rel="noreferrer">View repository <span>↗</span></a>
     </nav>
@@ -76,6 +78,31 @@
         </article>
       </div>
       <p class="data-note"><span>ⓘ</span> Figures shown here reflect the values currently documented in this repository. Check the linked official releases before citing them in reports or decisions.</p>
+    </section>
+
+    <section id="live-explorer" class="section-shell api-section">
+      <div class="section-heading">
+        <div><div class="eyebrow">02 / LIVE DATA + AI RESEARCH</div><h2>Connect to the <span class="muted-holo">live system.</span></h2></div>
+        <p>This panel queries your deployed API. It will not pretend to be live until the backend and database are connected.</p>
+      </div>
+      <div class="api-console">
+        <div class="api-console-head"><span class="status-dot"></span><span>API CONNECTION</span><span id="api-connection-status" data-state="offline" role="status">Checking configuration…</span></div>
+        <label for="api-base-url">Deployed API base URL</label>
+        <div class="api-connect-row"><input id="api-base-url" type="url" placeholder="https://your-api.onrender.com" autocomplete="url"><button id="api-connect-button" class="button button-primary" type="button">Connect ↗</button></div>
+        <p class="api-help">Paste the public URL assigned to the deployed API. This URL is public configuration, not a secret. Never enter API keys here.</p>
+        <form id="api-search-form" class="api-search-row"><label class="sr-only" for="api-search">Search indicators</label><input id="api-search" type="search" placeholder="Search indicators, periods or sources…"><button class="button button-quiet" type="submit">Search data</button></form>
+        <div id="api-results" class="api-results" aria-live="polite"><p>Connect to your deployed API to load database-backed indicators.</p></div>
+      </div>
+      <div class="api-console ai-console">
+        <div class="api-console-head"><span class="status-dot"></span><span>AI RESEARCH STUDIO</span><span>SERVER-SIDE KEY ONLY</span></div>
+        <p>Ask a question about Sri Lanka’s economy. The API runs web-grounded research using its server-side OpenAI key and stores the answer in the research history database.</p>
+        <form id="ai-research-form" class="ai-research-form">
+          <label class="sr-only" for="ai-research-question">Research question</label>
+          <textarea id="ai-research-question" rows="3" maxlength="1200" placeholder="e.g. What do the latest official releases say about inflation, tourism and foreign reserves?" required minlength="5"></textarea>
+          <button id="ai-research-button" class="button button-primary" type="submit">Research current sources ↗</button>
+        </form>
+        <pre id="ai-research-output" class="ai-research-output" aria-live="polite">AI research becomes available after the API is deployed and OPENAI_API_KEY is configured on the server.</pre>
+      </div>
     </section>
 
     <section id="platform" class="section-shell platform-section">
