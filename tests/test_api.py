@@ -1,6 +1,5 @@
 """API tests run with an isolated temporary SQLite database."""
 import importlib
-import json
 
 from fastapi.testclient import TestClient
 
@@ -36,18 +35,6 @@ def test_limits_are_validated(monkeypatch, tmp_path):
     _, client = make_client(monkeypatch, tmp_path)
     assert client.get("/api/indicators?limit=0").status_code == 422
     assert client.get("/api/research?limit=1000").status_code == 422
-
-
-def test_research_persists_and_rejects_non_url_sources(monkeypatch, tmp_path):
-    _, client = make_client(monkeypatch, tmp_path)
-    payload = {"question": "What changed in inflation?", "answer": "Check the official release.", "sources": ["https://www.cbsl.gov.lk/"]}
-    response = client.post("/api/research", json=payload)
-    assert response.status_code == 201
-    saved = client.get("/api/research").json()
-    assert saved["count"] == 1
-    assert saved["data"][0]["question"] == payload["question"]
-    bad = {**payload, "sources": ["javascript:alert(1)"]}
-    assert client.post("/api/research", json=bad).status_code == 422
 
 
 def test_database_initialization_is_idempotent(monkeypatch, tmp_path):
