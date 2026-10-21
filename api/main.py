@@ -6,12 +6,14 @@ Falls back to SQLite for local development. Never place database credentials in 
 from __future__ import annotations
 import os
 import sqlite3
+import time
+from collections import defaultdict, deque
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -35,6 +37,21 @@ class ResearchRecord(BaseModel):
     question: str = Field(min_length=5, max_length=1500)
     answer: str = Field(min_length=1, max_length=20000)
     sources: list[str] = Field(default_factory=list, max_length=30)
+
+class ResearchQuestion(BaseModel):
+    question: str = Field(min_length=5, max_length=1200)
+
+_request_times = defaultdict(deque)
+
+def _allow_research_request(client_ip: str) -> bool:
+    now = time.monotonic()
+    history = _request_times[client_ip]
+    while history and now - history[0] > 60:
+        history.popleft()
+    if len(history) >= 5:
+        return False
+    history.append(now)
+    return True
 
 def _connect():
     if DATABASE_URL:
@@ -131,23 +148,65 @@ def list_indicators(q: str = Query(default="", max_length=120), category: str = 
 
 @app.post("/api/research", status_code=201)
 def save_research(record: ResearchRecord):
-    """Store research produced by a trusted server-side AI workflow; this endpoint is not an AI proxy."""
+    """Persist a research record; intended for trusted server-side callers."""
     import json
     for source in record.sources:
         if not source.startswith(("https://", "http://")):
             raise HTTPException(status_code=422, detail="Every source must be an HTTP(S) URL")
     try:
         with connection() as (conn, pg):
-            sql = "INSERT INTO research_history (question,answer,sources) VALUES (?,?,?)"
-            source_value = json.dumps(record.sources) if not pg else json.dumps(record.sources)
-            cur = _execute(conn, pg, sql, (record.question.strip(), record.answer.strip(), source_value))
             if pg:
-                saved = cur.fetchone() if "RETURNING" in sql else None
+                saved = conn.execute(
+                    "INSERT INTO research_history (question,answer,sources) VALUES (%s,%s,%s::jsonb) RETURNING id",
+                    (record.question.strip(), record.answer.strip(), json.dumps(record.sources)),
+                ).fetchone()
             else:
+                cur = conn.execute(
+                    "INSERT INTO research_history (question,answer,sources) VALUES (?,?,?)",
+                    (record.question.strip(), record.answer.strip(), json.dumps(record.sources)),
+                )
                 saved = {"id": cur.lastrowid}
         return {"saved": True, "id": saved["id"] if saved else None}
     except Exception as exc:
         raise HTTPException(status_code=503, detail="Unable to save research record") from exc
+
+@app.post("/api/research/ask")
+def ask_research(payload: ResearchQuestion, request: Request):
+    """Run web-grounded AI research with the provider key kept on the server."""
+    client_ip = request.client.host if request.client else "unknown"
+    if not _allow_research_request(client_ip):
+        raise HTTPException(status_code=429, detail="Research limit reached. Please wait a minute and try again.")
+    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        raise HTTPException(status_code=503, detail="AI research is not configured on the API server yet.")
+    try:
+        from openai import OpenAI
+        response = OpenAI(api_key=api_key).responses.create(
+            model=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
+            tools=[{"type": "web_search"}],
+            instructions=("You are an evidence-led Sri Lankan economic research analyst. Prioritise official Sri Lankan government, Central Bank of Sri Lanka, Department of Census and Statistics, IMF, World Bank and ADB sources. Distinguish verified facts from analysis, state dates and units, never invent figures, and provide clickable source URLs. Note uncertainty."),
+            input="Research this question about Sri Lanka using current web sources. Structure the answer as Summary; Verified facts; Implications; Risks and unknowns; Sources. Do not give personalised financial or legal advice.\n\nQuestion: " + payload.question.strip(),
+        )
+        answer = getattr(response, "output_text", "")
+        if not answer or not answer.strip():
+            raise RuntimeError("AI returned an empty answer")
+        with connection() as (conn, pg):
+            if pg:
+                saved = conn.execute(
+                    "INSERT INTO research_history (question,answer,sources) VALUES (%s,%s,%s::jsonb) RETURNING id",
+                    (payload.question.strip(), answer.strip(), "[]"),
+                ).fetchone()
+            else:
+                cur = conn.execute(
+                    "INSERT INTO research_history (question,answer,sources) VALUES (?,?,?)",
+                    (payload.question.strip(), answer.strip(), "[]"),
+                )
+                saved = {"id": cur.lastrowid}
+        return {"answer": answer.strip(), "saved": True, "id": saved["id"] if saved else None}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Research service failed. Check server logs and provider configuration.") from exc
 
 @app.get("/api/research")
 def list_research(limit: int = Query(default=20, ge=1, le=100)):
