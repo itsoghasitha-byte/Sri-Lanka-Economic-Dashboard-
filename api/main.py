@@ -228,6 +228,125 @@ def ask_research(payload: ResearchQuestion, request: Request):
     except Exception as exc:
         raise HTTPException(status_code=502, detail="Research service failed. Check server logs and provider configuration.") from exc
 
+
+@app.get("/api/knowledge/pages")
+def search_knowledge_pages(q: str = Query(default="", max_length=180), limit: int = Query(default=30, ge=1, le=100)):
+    """Search the app's source-linked, versioned knowledge base."""
+    try:
+        with connection() as (conn, pg):
+            if q.strip():
+                term = "%" + q.strip().lower() + "%"
+                rows = _execute(conn, pg, """SELECT slug,title,content,sources,updated_at,revision
+                    FROM knowledge_pages WHERE LOWER(title) LIKE ? OR LOWER(content) LIKE ?
+                    ORDER BY updated_at DESC LIMIT ?""", (term, term, limit)).fetchall()
+            else:
+                rows = _execute(conn, pg, """SELECT slug,title,content,sources,updated_at,revision
+                    FROM knowledge_pages ORDER BY updated_at DESC LIMIT ?""", (limit,)).fetchall()
+        data = []
+        for row in rows:
+            item = dict(row)
+            item["sources"] = _json_value(item.get("sources"))
+            item["excerpt"] = item.get("content", "")[:260]
+            item.pop("content", None)
+            data.append(item)
+        return {"data": data, "count": len(data)}
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="Unable to search the knowledge base") from exc
+
+@app.get("/api/knowledge/pages/{slug}")
+def get_knowledge_page(slug: str):
+    try:
+        with connection() as (conn, pg):
+            row = _execute(conn, pg, """SELECT slug,title,content,sources,updated_at,revision
+                FROM knowledge_pages WHERE slug = ?""", (slug,)).fetchone()
+            if not row:
+                raise HTTPException(status_code=404, detail="Knowledge page not found")
+            revisions = _execute(conn, pg, """SELECT title,content,sources,created_at
+                FROM knowledge_revisions WHERE page_slug = ? ORDER BY id DESC LIMIT 20""", (slug,)).fetchall()
+        page = dict(row)
+        page["sources"] = _json_value(page.get("sources"))
+        history = []
+        for revision in revisions:
+            item = dict(revision)
+            item["sources"] = _json_value(item.get("sources"))
+            history.append(item)
+        page["history"] = history
+        return page
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="Unable to load the knowledge page") from exc
+
+@app.post("/api/knowledge/update")
+def update_knowledge_page(payload: KnowledgeUpdateQuestion, request: Request):
+    """Use current web research to create or refresh a versioned wiki-style page."""
+    client_ip = request.client.host if request.client else "unknown"
+    if not _allow_research_request(client_ip):
+        raise HTTPException(status_code=429, detail="AI research limit reached. Please wait a minute and try again.")
+    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        raise HTTPException(status_code=503, detail="AI research is not configured on the API server yet.")
+    topic = payload.topic.strip()
+    prompt = (
+        "Create or update a concise, encyclopedia-style knowledge page about the requested topic, "
+        "focused on Sri Lanka when relevant. Use current web search and prioritise official sources: "
+        "Central Bank of Sri Lanka, Department of Census and Statistics, relevant Sri Lankan ministries, "
+        "IMF, World Bank and Asian Development Bank. Separate established facts from interpretation. "
+        "Include an Updated findings section, dates/periods, definitions, context, limitations and "
+        "a Sources section containing direct clickable URLs. Never invent statistics or citations. "
+        "If a current fact cannot be verified, say so. Label uncertain claims clearly. "
+        "Topic: " + topic + "\nRequested focus: " + payload.focus.strip()
+    )
+    try:
+        from openai import OpenAI
+        response = OpenAI(api_key=api_key).responses.create(
+            model=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
+            tools=[{"type": "web_search"}],
+            instructions="You maintain a transparent public knowledge base. Accuracy, traceable primary sources, clear dates and explicit uncertainty matter more than confident-sounding prose.",
+            input=prompt,
+        )
+        content = (getattr(response, "output_text", "") or "").strip()
+        if not content:
+            raise RuntimeError("AI returned an empty knowledge page")
+        slug = _slugify(topic)
+        urls = _extract_urls(content)
+        import json
+        sources_json = json.dumps(urls)
+        with connection() as (conn, pg):
+            existing = _execute(conn, pg, "SELECT revision FROM knowledge_pages WHERE slug = ?", (slug,)).fetchone()
+            revision_no = int(existing["revision"]) + 1 if existing else 1
+            if pg:
+                conn.execute(
+                    """INSERT INTO knowledge_pages (slug,title,content,sources,revision,updated_at)
+                    VALUES (%s,%s,%s,%s::jsonb,%s,NOW())
+                    ON CONFLICT(slug) DO UPDATE SET title=EXCLUDED.title,content=EXCLUDED.content,
+                    sources=EXCLUDED.sources,revision=EXCLUDED.revision,updated_at=NOW()""",
+                    (slug, topic, content, sources_json, revision_no),
+                )
+                conn.execute(
+                    "INSERT INTO knowledge_revisions (page_slug,title,content,sources) VALUES (%s,%s,%s,%s::jsonb)",
+                    (slug, topic, content, sources_json),
+                )
+            else:
+                conn.execute(
+                    """INSERT INTO knowledge_pages (slug,title,content,sources,revision,updated_at)
+                    VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)
+                    ON CONFLICT(slug) DO UPDATE SET title=excluded.title,content=excluded.content,
+                    sources=excluded.sources,revision=excluded.revision,updated_at=CURRENT_TIMESTAMP""",
+                    (slug, topic, content, sources_json, revision_no),
+                )
+                conn.execute(
+                    "INSERT INTO knowledge_revisions (page_slug,title,content,sources) VALUES (?,?,?,?)",
+                    (slug, topic, content, sources_json),
+                )
+        return {"slug": slug, "title": topic, "content": content, "sources": urls,
+                "revision": revision_no, "updated": True,
+                "draft_notice": "AI-generated; verify important claims against the linked primary sources."}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Knowledge refresh failed. Check server logs and AI provider configuration.") from exc
+
 @app.get("/api/research")
 def list_research(limit: int = Query(default=20, ge=1, le=100)):
     try:
