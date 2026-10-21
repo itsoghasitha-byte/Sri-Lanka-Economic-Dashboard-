@@ -38,7 +38,7 @@ st.markdown(
     [data-testid="stMetricValue"] { background:linear-gradient(110deg,#697480,#1f2935 45%,#7d8792); -webkit-background-clip:text; background-clip:text; color:transparent!important; -webkit-text-fill-color:transparent; }
     [data-testid="stMetric"] { background:#fff; padding:1.15rem 1.2rem; border:1px solid #e2eaf3; border-radius:18px; box-shadow:0 8px 26px rgba(21,45,78,.045); }
     [data-testid="stMetricLabel"] { color:#66758b; font-weight:600; }
-    [data-testid="stMetricValue"] { color:#10233f; font-family:'Manrope',sans-serif; font-weight:800; }
+    [data-testid="stMetricValue"] { font-family:'Manrope',sans-serif; font-weight:800; }
     [data-testid="stTabs"] button { font-weight:700; }
     .hero { padding:2.1rem 2.2rem; border-radius:26px; color:#fff; background:radial-gradient(circle at 85% 20%,rgba(54,214,189,.32),transparent 28%),linear-gradient(120deg,#0d1f3c 0%,#123e70 55%,#146a79 100%); box-shadow:0 18px 50px rgba(18,50,86,.18); margin:.2rem 0 1.25rem 0; }
     .hero-kicker { text-transform:uppercase; letter-spacing:.16em; color:#85f1df; font-size:.73rem; font-weight:800; }
@@ -108,38 +108,47 @@ st.markdown(
 )
 
 
-st.markdown(
-    """
-    <div class="photo-intro">
-      <div class="section-eyebrow">Sri Lanka / Field notes</div>
-      <h2>One island. Many perspectives.</h2>
-      <p class="muted">A photographic interlude connecting the numbers to the places, people and landscapes behind the national story.</p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-photo_items = [
-    ("Sigiriya", "https://commons.wikimedia.org/wiki/Special:FilePath/Aerial%20View%20from%20Sigiriya.jpg?width=1000", "https://commons.wikimedia.org/wiki/File:Aerial_View_from_Sigiriya.jpg", "CC0 · Yourusernamewillbepublic2"),
-    ("Mirissa Beach", "https://commons.wikimedia.org/wiki/Special:FilePath/Mirissa%20beach%2C%20Srilanka.jpg?width=1000", "https://commons.wikimedia.org/wiki/File:Mirissa_beach,_Srilanka.jpg", "CC BY-SA 4.0 · Abishek Palraj"),
-    ("Galle Fort", "https://commons.wikimedia.org/wiki/Special:FilePath/Galle%20Fort%20-%20Srilanka.jpg?width=1000", "https://commons.wikimedia.org/wiki/File:Galle_Fort_-Srilanka.jpg", "Check file page for licence and attribution"),
-    ("Colombo Lotus Tower", "https://commons.wikimedia.org/wiki/Special:FilePath/Colombo%20Lotus%20Tower%20seen%20Galle%20Road.jpg?width=1000", "https://commons.wikimedia.org/wiki/File:Colombo_Lotus_Tower_seen_Galle_Road.jpg", "CC BY-SA 4.0 · Dinil Samarasinha"),
-    ("Ella", "https://commons.wikimedia.org/wiki/Special:FilePath/Ella%2C%20Sri%20Lanka.jpg?width=1000", "https://commons.wikimedia.org/wiki/File:Ella,_Sri_Lanka.jpg", "CC BY-SA 4.0 · Mohamed Aabid Ali"),
-    ("Parliament & Diyawanna Lake", "https://commons.wikimedia.org/wiki/Special:FilePath/New%20Sri%20Lankan%20Parliament%20in%20Kotte.jpg?width=1000", "https://commons.wikimedia.org/wiki/File:New_Sri_Lankan_Parliament_in_Kotte.jpg", "CC0 · Dennis Sylvester Hurd"),
-    ("Galle Face Green", "https://commons.wikimedia.org/wiki/Special:FilePath/Colombo%20Galle%20Face%20Green.jpg?width=1000", "https://commons.wikimedia.org/wiki/File:Colombo_Galle_Face_Green.jpg", "CC BY-SA 2.5 · Morgendorfferr"),
-]
-photo_cols = st.columns(3, gap="medium")
-for idx, (place, photo_url, source_url, credit) in enumerate(photo_items):
-    with photo_cols[idx % 3]:
-        st.markdown('<div class="photo-card">', unsafe_allow_html=True)
-        st.image(photo_url, use_container_width=True)
-        st.markdown(f"**{place}**")
-        st.caption(credit)
-        st.markdown(f"[View original and licence ↗]({source_url})")
-        st.markdown('</div>', unsafe_allow_html=True)
-st.caption("Photographs are linked to their Wikimedia Commons file pages. Verify each file’s current licence, required attribution, and any architectural or drone-photography restrictions before public/commercial deployment.")
-
 
 if page == "Overview":
+
+    st.markdown(
+        """
+        <div class="photo-intro">
+          <div class="section-eyebrow">03 / Island field notes</div>
+          <h2>One island. Many perspectives.</h2>
+          <p class="muted">A curated photographic journey through Sri Lanka. Select a location to explore the original photograph and its source record.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    photo_items = {
+        "Sigiriya": ("https://commons.wikimedia.org/wiki/Special:FilePath/Aerial%20View%20from%20Sigiriya.jpg?width=1400", "https://commons.wikimedia.org/wiki/File:Aerial_View_from_Sigiriya.jpg"),
+        "Mirissa Beach": ("https://commons.wikimedia.org/wiki/Special:FilePath/Mirissa%20beach%2C%20Srilanka.jpg?width=1400", "https://commons.wikimedia.org/wiki/File:Mirissa_beach,_Srilanka.jpg"),
+        "Galle Fort": ("https://commons.wikimedia.org/wiki/Special:FilePath/Galle%20Fort%20-%20Srilanka.jpg?width=1400", "https://commons.wikimedia.org/wiki/File:Galle_Fort_-Srilanka.jpg"),
+        "Colombo Lotus Tower": ("https://commons.wikimedia.org/wiki/Special:FilePath/Colombo%20Lotus%20Tower%20seen%20Galle%20Road.jpg?width=1400", "https://commons.wikimedia.org/wiki/File:Colombo_Lotus_Tower_seen_Galle_Road.jpg"),
+        "Ella": ("https://commons.wikimedia.org/wiki/Special:FilePath/Ella%2C%20Sri%20Lanka.jpg?width=1400", "https://commons.wikimedia.org/wiki/File:Ella,_Sri_Lanka.jpg"),
+        "Parliament aerial": ("https://commons.wikimedia.org/wiki/Special:FilePath/New%20Sri%20Lankan%20Parliament%20in%20Kotte.jpg?width=1400", "https://commons.wikimedia.org/wiki/File:New_Sri_Lankan_Parliament_in_Kotte.jpg"),
+        "Galle Face Green": ("https://commons.wikimedia.org/wiki/Special:FilePath/Colombo%20Galle%20Face%20Green.jpg?width=1400", "https://commons.wikimedia.org/wiki/File:Colombo_Galle_Face_Green.jpg"),
+    }
+    photo_location = st.radio(
+        "Choose a destination",
+        list(photo_items.keys()),
+        horizontal=True,
+        key="photo_location",
+    )
+    photo_url, source_url = photo_items[photo_location]
+    image_col, details_col = st.columns([1.65, 1], gap="large")
+    with image_col:
+        st.image(photo_url, use_container_width=True)
+    with details_col:
+        st.markdown(f'<div class="panel-title">{photo_location}</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<p class="muted">Real-photo source: Wikimedia Commons. Open the original file page to confirm photographer credit, licence conditions and permitted reuse before publishing.</p>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(f"[View original photo and licence ↗]({source_url})")
+        st.caption("Aerial image availability does not guarantee that it is a drone photograph. Replace with a verified drone-original if that exact viewpoint is required.")
+
     st.markdown('<div class="section-eyebrow">01 / Executive snapshot</div>', unsafe_allow_html=True)
     st.header("The labour market at a glance")
     st.write("Start with the latest reporting period in the bundled dataset, then move into the trends and underlying figures.")
@@ -178,15 +187,15 @@ if page == "Overview":
         )
         fig = px.line(
             labour, x="Period", y=overview_metric, markers=True,
-            template="plotly_white",
+            template="plotly_dark",
             labels={"Period": "Reporting period", overview_metric: "Percent"},
         )
-        fig.update_traces(line=dict(width=3, color="#176b9a"), marker=dict(size=9, color="#36bda8"))
+        fig.update_traces(line=dict(width=3, color="#69e8ff"), marker=dict(size=9, color="#d4fff9", line=dict(width=2, color="#3a9dff")))
         fig.update_layout(
             height=350, margin=dict(l=10, r=10, t=20, b=10),
-            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="DM Sans", color="#66758b"),
-            yaxis=dict(ticksuffix="%", gridcolor="#eaf0f6"),
+            paper_bgcolor="#071321", plot_bgcolor="#071321",
+            font=dict(family="DM Sans", color="#c8dff0"),
+            yaxis=dict(ticksuffix="%", gridcolor="rgba(92,180,230,.18)", zerolinecolor="rgba(92,180,230,.25)"),
             xaxis=dict(showgrid=False),
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -242,14 +251,14 @@ elif page == "Labour-market trends":
             var_name="Indicator", value_name="Percent",
         )
         if chart_style == "Bar":
-            fig = px.bar(chart_data, x="Period", y="Percent", color="Indicator", barmode="group", template="plotly_white")
+            fig = px.bar(chart_data, x="Period", y="Percent", color="Indicator", barmode="group", template="plotly_dark")
         else:
-            fig = px.line(chart_data, x="Period", y="Percent", color="Indicator", markers=True, template="plotly_white")
+            fig = px.line(chart_data, x="Period", y="Percent", color="Indicator", markers=True, template="plotly_dark")
         fig.update_layout(
             height=500, margin=dict(l=10, r=10, t=35, b=10),
-            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="white",
-            font=dict(family="DM Sans", color="#66758b"),
-            yaxis=dict(title="Percent", ticksuffix="%", gridcolor="#eaf0f6"),
+            paper_bgcolor="#071321", plot_bgcolor="#071321",
+            font=dict(family="DM Sans", color="#c8dff0"),
+            yaxis=dict(title="Percent", ticksuffix="%", gridcolor="rgba(92,180,230,.18)", zerolinecolor="rgba(92,180,230,.25)"),
             xaxis=dict(title="Reporting period", showgrid=False),
             legend_title_text="Indicator",
         )
@@ -311,7 +320,7 @@ elif page == "Data explorer":
                         fig = px.scatter(plot_data, x=x_axis, y=y_cols, template="plotly_white")
                     else:
                         fig = px.line(plot_data, x=x_axis, y=y_cols, markers=True, template="plotly_white")
-                    fig.update_layout(height=430, margin=dict(l=10, r=10, t=25, b=10))
+                    fig.update_layout(height=430, margin=dict(l=10, r=10, t=25, b=10), paper_bgcolor="#071321", plot_bgcolor="#071321", font=dict(family="DM Sans", color="#c8dff0"), yaxis=dict(gridcolor="rgba(92,180,230,.18)"), xaxis=dict(gridcolor="rgba(92,180,230,.10)"))
                     st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.info("Select at least one numeric measure to create a chart.")
