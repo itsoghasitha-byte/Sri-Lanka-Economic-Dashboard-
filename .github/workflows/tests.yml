@@ -25,8 +25,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Compile Python files
-        run: python -m compileall -q app.py data_utils.py tests
-      - name: Run unit and Streamlit app tests
+        run: python -m compileall -q app.py data_utils.py api tests
+      - name: Run unit, API and Streamlit app tests
         env:
           PYTHONPATH: .
         run: pytest -q -ra
