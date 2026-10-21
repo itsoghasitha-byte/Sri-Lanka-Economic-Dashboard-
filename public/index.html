@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070a12">
+  <meta name="description" content="Explore Sri Lanka's economic indicators through an interactive, research-focused data dashboard.">
+  <title>Sri Lanka Economic Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <script src="api-client.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="Sri Lanka Economic Intelligence home">
+      <span class="brand-mark"><span></span><span></span><span></span></span>
+      <span class="brand-name">LANKA<span>/</span>INTEL</span>
+    </a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span><span></span></button>
+    <nav id="site-nav" class="nav">
+      <a href="#overview">Overview</a>
+      <a href="#platform">Platform</a>
+      <a href="#live-explorer">Live explorer</a>
+      <a href="#sources">Data sources</a>
+      <a class="nav-cta" href="https://github.com/itsoghasitha-byte/Sri-Lanka-Economic-Dashboard-" target="_blank" rel="noreferrer">View repository <span>↗</span></a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="status-dot"></span> ECONOMIC SIGNALS · SRI LANKA</div>
+        <h1>See the economy<br>in a <span class="holo-text">new light.</span></h1>
+        <p class="hero-lede">A focused, interactive view of Sri Lanka’s economic indicators—built to make public data easier to explore, compare and understand.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#overview">Explore the indicators <span>↘</span></a>
+          <a class="button button-quiet" href="https://github.com/itsoghasitha-byte/Sri-Lanka-Economic-Dashboard-" target="_blank" rel="noreferrer">Explore the code <span>↗</span></a>
+        </div>
+        <div class="hero-footnote"><span class="tiny-orbit"></span> PUBLIC DATA · TRANSPARENT SOURCES · INTERACTIVE EXPLORATION</div>
+      </div>
+      <div class="hero-art" aria-label="Abstract holographic data visualization">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+        <div class="orb-core"><div class="orb-glint"></div><div class="orb-ring"></div></div>
+        <div class="float-tag tag-top"><span class="tag-pip"></span> DATA / 001 <b>CONNECTED</b></div>
+        <div class="float-tag tag-bottom"><span>LK</span><div><b>ECONOMIC PULSE</b><small>INDICATORS IN FOCUS</small></div></div>
+        <div class="crosshair crosshair-one"></div><div class="crosshair crosshair-two"></div>
+      </div>
+      <div class="hero-index"><span>01 — 04</span><span>SCROLL TO EXPLORE <i>↓</i></span></div>
+    </section>
+
+    <section id="overview" class="section-shell overview-section">
+      <div class="section-heading">
+        <div><div class="eyebrow">01 / INDICATOR SNAPSHOT</div><h2>Signals worth <span class="muted-holo">watching.</span></h2></div>
+        <p>Selected labour-market observations from the project’s bundled dataset. Figures are published observations, not a live feed.</p>
+      </div>
+      <div class="metric-grid">
+        <article class="metric-card">
+          <div class="metric-top"><span>LABOUR FORCE PARTICIPATION</span><span class="metric-icon">↗</span></div>
+          <div class="metric-value">50.0<span>%</span></div>
+          <div class="metric-bottom"><span class="metric-line"><i style="width:76%"></i></span><span>2026 Q2</span></div>
+        </article>
+        <article class="metric-card metric-card-accent">
+          <div class="metric-top"><span>UNEMPLOYMENT RATE</span><span class="metric-icon">⌁</span></div>
+          <div class="metric-value">4.0<span>%</span></div>
+          <div class="metric-bottom"><span class="metric-line"><i style="width:34%"></i></span><span>2026 Q2</span></div>
+        </article>
+        <article class="metric-card metric-card-wide">
+          <div class="metric-top"><span>DATA COVERAGE</span><span class="metric-icon">◉</span></div>
+          <div class="coverage-display"><strong>2025—26</strong><span>Annual and quarterly observations included in the project dataset.</span></div>
+          <div class="metric-bottom"><span class="source-pill"><span class="status-dot"></span> DCS SRI LANKA</span><span>Labour market</span></div>
+        </article>
+      </div>
+      <p class="data-note"><span>ⓘ</span> Figures shown here reflect the values currently documented in this repository. Check the linked official releases before citing them in reports or decisions.</p>
+    </section>
+
+    <section id="live-explorer" class="section-shell api-section">
+      <div class="section-heading">
+        <div><div class="eyebrow">02 / LIVE DATA + AI RESEARCH</div><h2>Connect to the <span class="muted-holo">live system.</span></h2></div>
+        <p>This panel queries your deployed API. It will not pretend to be live until the backend and database are connected.</p>
+      </div>
+      <div class="api-console">
+        <div class="api-console-head"><span class="status-dot"></span><span>API CONNECTION</span><span id="api-connection-status" data-state="offline" role="status">Checking configuration…</span></div>
+        <label for="api-base-url">Deployed API base URL</label>
+        <div class="api-connect-row"><input id="api-base-url" type="url" placeholder="https://your-api.onrender.com" autocomplete="url"><button id="api-connect-button" class="button button-primary" type="button">Connect ↗</button></div>
+        <p class="api-help">Paste the public URL assigned to the deployed API. This URL is public configuration, not a secret. Never enter API keys here.</p>
+        <form id="api-search-form" class="api-search-row"><label class="sr-only" for="api-search">Search indicators</label><input id="api-search" type="search" placeholder="Search indicators, periods or sources…"><button class="button button-quiet" type="submit">Search data</button></form>
+        <div id="api-results" class="api-results" aria-live="polite"><p>Connect to your deployed API to load database-backed indicators.</p></div>
+      </div>
+      <div class="api-console ai-console">
+        <div class="api-console-head"><span class="status-dot"></span><span>AI RESEARCH STUDIO</span><span>SERVER-SIDE KEY ONLY</span></div>
+        <p>Ask a question about Sri Lanka’s economy. The API runs web-grounded research using its server-side OpenAI key and stores the answer in the research history database.</p>
+        <form id="ai-research-form" class="ai-research-form">
+          <label class="sr-only" for="ai-research-question">Research question</label>
+          <textarea id="ai-research-question" rows="3" maxlength="1200" placeholder="e.g. What do the latest official releases say about inflation, tourism and foreign reserves?" required minlength="5"></textarea>
+          <button id="ai-research-button" class="button button-primary" type="submit">Research current sources ↗</button>
+        </form>
+        <pre id="ai-research-output" class="ai-research-output" aria-live="polite">AI research becomes available after the API is deployed and OPENAI_API_KEY is configured on the server.</pre>
+      </div>
+    </section>
+
+    <section id="platform" class="section-shell platform-section">
+      <div class="section-heading">
+        <div><div class="eyebrow">02 / INSIDE THE PLATFORM</div><h2>Data, with <span class="muted-holo">dimension.</span></h2></div>
+        <div class="slide-controls">
+          <button class="icon-button" id="zoom-out" aria-label="Zoom out of preview">−</button>
+          <span id="zoom-label" class="zoom-label">100%</span>
+          <button class="icon-button" id="zoom-in" aria-label="Zoom in to preview">+</button>
+          <span class="control-divider"></span>
+          <button class="icon-button" id="prev-slide" aria-label="Previous preview">←</button>
+          <button class="icon-button" id="next-slide" aria-label="Next preview">→</button>
+        </div>
+      </div>
+      <div class="showcase-frame">
+        <div class="showcase-glow"></div>
+        <div class="preview-viewport">
+          <div class="preview-track" id="preview-track">
+            <article class="preview-slide active" aria-label="Preview one: labour market overview">
+              <div class="preview-window">
+                <div class="window-bar"><span class="window-lights"><i></i><i></i><i></i></span><span>ECONOMIC / OVERVIEW</span><span class="window-code">LK—01</span></div>
+                <div class="window-content">
+                  <div class="window-title"><div><small>MARKET OBSERVATORY</small><h3>Labour at a glance.</h3></div><span class="window-badge">DATASET VIEW</span></div>
+                  <div class="mini-kpis"><div><small>PARTICIPATION</small><b>50.0<em>%</em></b><span>2026 Q2</span></div><div><small>UNEMPLOYMENT</small><b>4.0<em>%</em></b><span>2026 Q2</span></div><div><small>OBSERVATIONS</small><b>03</b><span>Periods shown</span></div></div>
+                  <div class="chart-panel"><div class="chart-label"><span>INDICATOR TREND</span><span>ILLUSTRATIVE PREVIEW</span></div><svg viewBox="0 0 640 180" role="img" aria-label="Stylized preview chart, not raw source data"><defs><linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#7cf4ff" stop-opacity=".24"/><stop offset="100%" stop-color="#7cf4ff" stop-opacity="0"/></linearGradient></defs><g class="grid-lines"><path d="M0 25H640M0 65H640M0 105H640M0 145H640"/></g><path class="chart-area" d="M0 124 C55 112 70 80 128 92 S208 125 258 75 S340 84 388 55 S470 79 520 40 S585 53 640 18 L640 180 L0 180Z"/><path class="chart-line" d="M0 124 C55 112 70 80 128 92 S208 125 258 75 S340 84 388 55 S470 79 520 40 S585 53 640 18"/><circle cx="520" cy="40" r="5" class="chart-point"/></svg><div class="chart-axis"><span>2025</span><span>2026 Q1</span><span>2026 Q2</span></div></div>
+                </div>
+              </div>
+            </article>
+            <article class="preview-slide" aria-label="Preview two: source-first research">
+              <div class="preview-window research-window">
+                <div class="window-bar"><span class="window-lights"><i></i><i></i><i></i></span><span>RESEARCH / SOURCE LOG</span><span class="window-code">LK—02</span></div>
+                <div class="window-content research-content"><div class="terminal-label"><span class="status-dot"></span> RESEARCH WORKSPACE</div><h3>Context behind<br><span class="holo-text">the numbers.</span></h3><p>Move from indicator to context with source-linked research tools inside the Streamlit application.</p><div class="source-row"><span class="source-symbol">↗</span><div><b>Department of Census and Statistics</b><small>Official labour-force releases</small></div><span class="source-state">REFERENCE</span></div><div class="source-row"><span class="source-symbol">⌘</span><div><b>AI Research Studio</b><small>Web-grounded research, when configured</small></div><span class="source-state">OPTIONAL</span></div><div class="research-foot">API ACCESS MAY BE REQUIRED FOR AI FEATURES</div></div>
+              </div>
+            </article>
+            <article class="preview-slide" aria-label="Preview three: data exploration">
+              <div class="preview-window explore-window">
+                <div class="window-bar"><span class="window-lights"><i></i><i></i><i></i></span><span>DATA / EXPLORER</span><span class="window-code">LK—03</span></div>
+                <div class="window-content explore-content"><small class="terminal-label">EXPLORE WITH PURPOSE</small><h3>From public data<br>to clearer questions.</h3><div class="explore-list"><div><span>01</span><div><b>Compare periods</b><small>Explore indicators across included observations.</small></div><span>↗</span></div><div><span>02</span><div><b>Inspect the data</b><small>View tables and download CSV data.</small></div><span>↗</span></div><div><span>03</span><div><b>Bring your own CSV</b><small>Validate and explore compatible datasets.</small></div><span>↗</span></div></div></div>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="showcase-footer"><div class="slide-indicators" id="slide-indicators"><button class="active" aria-label="Show preview one"></button><button aria-label="Show preview two"></button><button aria-label="Show preview three"></button></div><span id="slide-caption">01 / LABOUR MARKET OVERVIEW</span><span class="showcase-hint">DRAG / TAP ARROWS TO EXPLORE</span></div>
+      </div>
+      <div class="feature-row">
+        <article><span class="feature-number">01</span><h3>Interactive by design</h3><p>Explore charts, compare observations and inspect tables in the Streamlit app.</p></article>
+        <article><span class="feature-number">02</span><h3>Sources in focus</h3><p>Start with official public releases and keep the limits of the dataset visible.</p></article>
+        <article><span class="feature-number">03</span><h3>Tested foundations</h3><p>Python validation helpers and automated tests support the underlying project.</p></article>
+      </div>
+    </section>
+
+    <section id="sources" class="sources-section">
+      <div class="section-shell sources-inner">
+        <div><div class="eyebrow">03 / TRANSPARENCY FIRST</div><h2>Good analysis<br>starts with <span class="holo-text">good sources.</span></h2><p>The project’s labour-market dataset references releases from Sri Lanka’s Department of Census and Statistics. Values are bundled with the repository and are not automatically refreshed.</p><a class="button button-primary" href="https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/" target="_blank" rel="noreferrer">Browse official reports <span>↗</span></a></div>
+        <div class="source-card"><div class="source-card-top"><span class="source-symbol">↗</span><span class="source-pill">PRIMARY SOURCE</span></div><h3>Department of Census<br>and Statistics</h3><p>Official quarterly labour-force reports and annual labour-force publications.</p><a href="https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/" target="_blank" rel="noreferrer">Annual bulletins <span>↗</span></a><a href="https://www.statistics.gov.lk/LabourForce/StaticalInformation/QuarterlyReports/" target="_blank" rel="noreferrer">Quarterly reports <span>↗</span></a><div class="source-card-bottom"><span class="status-dot"></span> SOURCE LINKS OPEN OFFICIAL SITE</div></div>
+      </div>
+    </section>
+
+    <section class="final-cta section-shell">
+      <div class="cta-orb" aria-hidden="true"></div><div class="eyebrow">READY TO GO DEEPER?</div><h2>Explore the data.<br><span class="muted-holo">Question the story.</span></h2><p>Open the project repository to explore the code, dataset, documentation and automated tests.</p><div class="hero-actions"><a class="button button-primary" href="https://github.com/itsoghasitha-byte/Sri-Lanka-Economic-Dashboard-" target="_blank" rel="noreferrer">Open GitHub repository <span>↗</span></a><a class="button button-quiet" href="#home">Back to top ↑</a></div>
+    </section>
+  </main>
+
+  <footer class="footer section-shell"><a class="brand" href="#home"><span class="brand-mark"><span></span><span></span><span></span></span><span class="brand-name">LANKA<span>/</span>INTEL</span></a><span>AN INDEPENDENT DATA EXPLORATION PROJECT</span><span>© <span id="year"></span> · BUILT FOR CURIOSITY</span></footer>
+</body>
+</html>
