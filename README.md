@@ -52,4 +52,4 @@ GitHub Actions compiles Python, checks JavaScript syntax and runs the automated 
 
 ## Deployment
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for database, API, frontend and secret configuration. Hosted services must be provisioned in the relevant provider accounts; a GitHub commit alone does not deploy the application. The premium frontend/API work is currently on the feature/premium-economic-website branch until merged.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for database, API, frontend and secret configuration. A GitHub Pages workflow is included at `.github/workflows/deploy-pages.yml` for a free static preview; enable **Settings → Pages → GitHub Actions** in the repository for that workflow to publish. GitHub Pages serves only the frontend files: AI research and database features require a separately deployed API, a configured API URL, and server-side `OPENAI_API_KEY`/`DATABASE_URL` secrets. Hosted services must be provisioned in the relevant provider accounts; a GitHub commit alone does not deploy the application. The premium frontend/API work is currently on the feature/premium-economic-website branch until merged.
