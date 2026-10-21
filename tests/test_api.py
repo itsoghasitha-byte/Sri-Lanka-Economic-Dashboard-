@@ -1,0 +1,56 @@
+"""API tests run with an isolated temporary SQLite database."""
+import importlib
+import json
+
+from fastapi.testclient import TestClient
+
+
+def make_client(monkeypatch, tmp_path):
+    monkeypatch.setenv("SQLITE_PATH", str(tmp_path / "test.db"))
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    import api.main as main
+    importlib.reload(main)
+    main.init_db()
+    return main, TestClient(main.app)
+
+
+def test_health_and_seed_data(monkeypatch, tmp_path):
+    main, client = make_client(monkeypatch, tmp_path)
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "ok"
+    data = client.get("/api/indicators").json()
+    assert data["count"] == 6
+    assert all("source_url" in row for row in data["data"])
+
+
+def test_indicator_search_and_category_filter(monkeypatch, tmp_path):
+    _, client = make_client(monkeypatch, tmp_path)
+    response = client.get("/api/indicators", params={"q": "unemployment", "category": "labour"})
+    assert response.status_code == 200
+    assert response.json()["count"] == 3
+    assert all(row["indicator_key"] == "unemployment_rate" for row in response.json()["data"])
+
+
+def test_limits_are_validated(monkeypatch, tmp_path):
+    _, client = make_client(monkeypatch, tmp_path)
+    assert client.get("/api/indicators?limit=0").status_code == 422
+    assert client.get("/api/research?limit=1000").status_code == 422
+
+
+def test_research_persists_and_rejects_non_url_sources(monkeypatch, tmp_path):
+    _, client = make_client(monkeypatch, tmp_path)
+    payload = {"question": "What changed in inflation?", "answer": "Check the official release.", "sources": ["https://www.cbsl.gov.lk/"]}
+    response = client.post("/api/research", json=payload)
+    assert response.status_code == 201
+    saved = client.get("/api/research").json()
+    assert saved["count"] == 1
+    assert saved["data"][0]["question"] == payload["question"]
+    bad = {**payload, "sources": ["javascript:alert(1)"]}
+    assert client.post("/api/research", json=bad).status_code == 422
+
+
+def test_database_initialization_is_idempotent(monkeypatch, tmp_path):
+    main, client = make_client(monkeypatch, tmp_path)
+    main.init_db()
+    assert client.get("/api/indicators").json()["count"] == 6
