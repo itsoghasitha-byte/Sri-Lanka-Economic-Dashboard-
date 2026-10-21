@@ -19,7 +19,7 @@ from pydantic import BaseModel, Field
 
 ROOT = Path(__file__).resolve().parents[1]
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
-SQLITE_PATH = Path(os.getenv("SQLITE_PATH", str(ROOT / "data" / "economic_intel.db")))
+SQLITE_PATH = Path(os.getenv("SQLITE_PATH", "/tmp/economic_intel.db" if os.getenv("VERCEL") else str(ROOT / "data" / "economic_intel.db")))
 DEMO_ROWS = [
     ("2025", "participation_rate", "Labour-force participation", 49.4, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/", "official_snapshot"),
     ("2025", "unemployment_rate", "Unemployment rate", 3.9, "%", "labour", "Department of Census and Statistics", "https://www.statistics.gov.lk/LabourForce/StaticalInformation/Bulletins/", "official_snapshot"),
