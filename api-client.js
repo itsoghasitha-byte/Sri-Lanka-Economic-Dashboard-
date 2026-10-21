@@ -8,7 +8,7 @@
   const researchForm = byId("ai-research-form");
   const researchOutput = byId("ai-research-output");
   const savedKey = "lankaIntelPublicApiBase";
-  const cleanBase = value => value.trim().replace(/\\/+$/, "");
+  const cleanBase = value => value.trim().replace(/\/+$/, "");
   const baseUrl = () => cleanBase(input.value);
   const setStatus = (message, good = false) => {
     status.textContent = message;
@@ -30,7 +30,7 @@
   };
   async function connect() {
     const base = baseUrl();
-    if (!/^https?:\\/\\//i.test(base)) {
+    if (!/^https?:\/\//i.test(base)) {
       setStatus("Enter a valid http(s) API URL.");
       return;
     }
@@ -66,7 +66,7 @@
       row.append(make("td", Number(item.value).toLocaleString(undefined, { maximumFractionDigits: 2 }) + " " + item.unit));
       const sourceCell = make("td");
       const link = make("a", String(item.source));
-      if (/^https?:\\/\\//i.test(item.source_url || "")) {
+      if (/^https?:\/\//i.test(item.source_url || "")) {
         link.href = item.source_url;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
