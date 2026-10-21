@@ -28,7 +28,27 @@ The API can create its own tables on startup too; running the SQL schema is usef
 
 Free hosting plans can sleep, have usage limits, or change terms. Confirm current limits in each provider's dashboard.
 
-## 3. Publish the holographic website (GitHub Pages)
+
+## 3. Deploy the full website and FastAPI backend on Vercel
+
+The repository now includes a Vercel FastAPI entrypoint (`index.py`), Vercel configuration (`vercel.json`), and static frontend copies in `public/`. To deploy it:
+
+1. Sign in to Vercel and choose **Add New → Project**.
+2. Import `itsoghasitha-byte/Sri-Lanka-Economic-Dashboard-` from GitHub.
+3. Select branch `feature/premium-economic-website` while the changes are still on that branch.
+4. Keep the detected FastAPI framework and default build settings; do not set a separate output directory.
+5. Add these environment variables under the Vercel project's **Settings → Environment Variables** for Production (and Preview if you need previews):
+   - `DATABASE_URL`: the Neon PostgreSQL connection string, kept private.
+   - `OPENAI_API_KEY`: your OpenAI API key if you want AI research and knowledge-page refreshes.
+   - `OPENAI_MODEL`: `gpt-4.1-mini` (or another model enabled for your API account).
+   - `CORS_ORIGINS`: the exact Vercel production origin, e.g. `https://YOUR-PROJECT.vercel.app`, with no trailing slash. Add your custom domain here too if you use one.
+6. Click **Deploy** and wait for the build to finish.
+7. Test `https://YOUR-PROJECT.vercel.app/health` and `https://YOUR-PROJECT.vercel.app/docs`. Health should report `database: postgresql`; if it reports SQLite, the `DATABASE_URL` variable was not applied.
+8. Open the homepage and use the Live data + AI research section. For same-origin API use, enter the Vercel site's own base URL in the API URL field if it does not auto-connect.
+
+**Important:** creating these repository files does not itself create a Vercel project or deploy it. You must import the repository in the Vercel dashboard or authorize a deployment tool. Never commit Neon credentials or the OpenAI key. The starter indicator rows are bundled snapshots, not a live official-data feed. AI research requires a valid server-side key and can incur provider usage charges.
+
+## 4. Publish the holographic website (GitHub Pages)
 
 1. Open the repository's **Settings → Pages**.
 2. Choose **Deploy from a branch**, select feature/premium-economic-website and /(root), then save. If the branch is later merged to main, you can publish from main instead.
@@ -38,13 +58,13 @@ Free hosting plans can sleep, have usage limits, or change terms. Confirm curren
 
 The public API URL is not a secret. The browser UI stores this URL locally on that device. Do not put DATABASE_URL, OPENAI_API_KEY, Supabase service-role keys, or other credentials into HTML, JavaScript, GitHub Pages, or local browser storage.
 
-## 4. AI research security
+## 5. AI research security
 
 The AI key is read only from the API server's OPENAI_API_KEY environment variable. The browser sends only the research question to /api/research/ask; the server invokes OpenAI web search and saves the result to the database. The endpoint enforces input length and a lightweight per-process rate limit of five requests per IP per minute. This is a basic abuse guard, not user authentication or a full distributed rate limiter; monitor usage and configure provider spending limits. Never expose the key in the frontend.
 
 The existing Streamlit app's AI Research Studio separately uses OPENAI_API_KEY in Streamlit secrets/environment.
 
-## 5. End-to-end verification checklist
+## 6. End-to-end verification checklist
 
 - [ ] /health returns status: ok and database: postgresql.
 - [ ] /api/indicators returns rows with source links.
