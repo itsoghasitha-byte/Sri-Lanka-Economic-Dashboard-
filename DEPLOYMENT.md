@@ -10,7 +10,7 @@ This project is prepared for a free-tier deployment, but hosted services are **n
 4. In **Project Settings → Database**, copy a PostgreSQL connection string. Use the provider's session pooler/connection pooler if direct connectivity is unavailable from your hosting provider.
 5. Keep the full connection string private. Add it to Render as the environment variable DATABASE_URL.
 
-The API can create its own tables on startup too; running the SQL schema is useful for reviewing the structure in Supabase. Starter rows are explicitly marked bundled_sample, not a live official-data import.
+The API can create its own tables on startup too; running the SQL schema is useful for reviewing the structure in Supabase. Starter rows are labelled official_snapshot: they are a bundled snapshot of DCS-published observations, not a live official-data import.
 
 ## 2. Deploy the API (Render)
 
