@@ -1,5 +1,7 @@
 # Sri Lanka Economic Intelligence
 
+![Automated tests](https://github.com/itsoghasitha-byte/Sri-Lanka-Economic-Dashboard-/actions/workflows/tests.yml/badge.svg?branch=feature%2Fpremium-economic-website)
+
 An AI-assisted Sri Lankan economic research and data dashboard built with **Python, Streamlit, FastAPI, PostgreSQL, Pandas, Plotly and pytest**.
 
 ## Features
@@ -11,6 +13,10 @@ An AI-assisted Sri Lankan economic research and data dashboard built with **Pyth
 - Searchable AI-generated knowledge pages with source links and revision history.
 - PostgreSQL support, with SQLite for local development.
 - Holographic static website, API explorer and GitHub Actions test workflow.
+
+## Project status
+
+The enhanced full-stack implementation is developed on the `feature/premium-economic-website` branch and is available for code review in [Pull Request #1](https://github.com/itsoghasitha-byte/Sri-Lanka-Economic-Dashboard-/pull/1). The badge above reflects the automated test workflow for that branch. A passing test workflow does not, by itself, confirm that all hosted services or external integrations are configured.
 
 ## Official labour-market data
 
