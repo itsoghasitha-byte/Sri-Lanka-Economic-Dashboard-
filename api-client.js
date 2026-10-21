@@ -190,7 +190,9 @@
     }
   });
   const existing = localStorage.getItem(savedKey);
+  const vercelSameOrigin = window.location.hostname.endsWith(".vercel.app") ? window.location.origin : "";
   if (existing) input.value = existing;
-  if (existing) connect();
+  else if (vercelSameOrigin) input.value = vercelSameOrigin;
+  if (existing || vercelSameOrigin) connect();
   else setStatus("API not connected · deploy the backend to enable live queries");
 })();
