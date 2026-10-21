@@ -1,10 +1,12 @@
 from pathlib import Path
+import os
 
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 
 from data_utils import load_csv, validate_labour_data
+from ai_research import research_with_ai
 
 st.set_page_config(
     page_title="Sri Lanka Economic Intelligence",
@@ -82,7 +84,7 @@ with st.sidebar:
     st.caption("ECONOMIC INTELLIGENCE")
     page = st.radio(
         "NAVIGATION",
-        ["Overview", "Labour-market trends", "Data explorer", "Sources & methodology"],
+        ["Overview", "Labour-market trends", "Data explorer", "AI research studio", "Sources & methodology"],
         label_visibility="collapsed",
         key="page",
     )
@@ -327,7 +329,7 @@ elif page == "Data explorer":
         except (ValueError, UnicodeDecodeError, pd.errors.ParserError) as exc:
             st.error(f"Could not read this CSV. Check that it is a valid, consistently formatted file. Details: {exc}")
 
-else:
+elif page == "Sources & methodology":
     st.markdown('<div class="section-eyebrow">04 / Transparency & reproducibility</div>', unsafe_allow_html=True)
     st.header("Sources & methodology")
     st.write("This section documents where the included observations come from, what this dashboard does and does not claim, and how to reproduce it.")
@@ -362,6 +364,66 @@ else:
         language="bash",
     )
     st.markdown("[View the repository on GitHub ↗](https://github.com/itsoghasitha-byte/Sri-Lanka-Economic-Dashboard-)")
+
+elif page == "AI research studio":
+    st.markdown('<div class="section-eyebrow">05 / Evidence-led research</div>', unsafe_allow_html=True)
+    st.header("AI research studio")
+    st.write("Ask a research question across Sri Lanka's finance, investment, real estate, infrastructure and business markets. The assistant searches the web and should cite the sources behind its analysis.")
+    with st.expander("Research areas and suggested questions", expanded=True):
+        prompt_cols = st.columns(2)
+        with prompt_cols[0]:
+            st.markdown("**Finance & development**")
+            st.markdown("- What do the latest Central Bank and IMF reports say about inflation, debt, credit and growth?")
+            st.markdown("- Which sectors could benefit from new foreign direct investment?")
+            st.markdown("- What are the main risks for SMEs, exporters and capital markets?")
+        with prompt_cols[1]:
+            st.markdown("**Real estate & India partnership**")
+            st.markdown("- What official evidence is available on Colombo office, residential, hospitality and logistics development?")
+            st.markdown("- How could India-Sri Lanka energy, port, digital-payment and connectivity projects affect businesses?")
+            st.markdown("- What is confirmed versus proposed in cooperation between President Anura Kumara Disanayaka and PM Narendra Modi?")
+    with st.expander("Primary-source quick links", expanded=False):
+        st.markdown("- [Central Bank of Sri Lanka](https://www.cbsl.gov.lk/)")
+        st.markdown("- [Department of Census and Statistics](https://www.statistics.gov.lk/)")
+        st.markdown("- [Board of Investment of Sri Lanka](https://investsrilanka.com/)")
+        st.markdown("- [Urban Development Authority](https://www.uda.gov.lk/)")
+        st.markdown("- [Colombo Stock Exchange](https://www.cse.lk/)")
+        st.markdown("- [IMF — Sri Lanka](https://www.imf.org/en/Countries/LKA)")
+        st.markdown("- [World Bank — Sri Lanka](https://www.worldbank.org/en/country/srilanka)")
+        st.markdown("- [India–Sri Lanka bilateral relations](https://www.hcicolombo.gov.in/page.php?id=india-sri-lanka-bilateral-relations)")
+    with st.form("ai_research_form"):
+        research_question = st.text_area(
+            "Your research question",
+            placeholder="Example: Using the latest official reports, assess the opportunities and risks for Sri Lanka's real-estate and logistics markets from deeper India–Sri Lanka energy and connectivity cooperation. Separate confirmed projects from proposals and cite sources.",
+            height=130,
+        )
+        submitted = st.form_submit_button("Search reports & analyse", type="primary", use_container_width=True)
+    if submitted:
+        if not research_question.strip():
+            st.warning("Enter a question so the research assistant knows what to investigate.")
+        else:
+            secret_key = None
+            try:
+                secret_key = st.secrets.get("OPENAI_API_KEY")
+            except Exception:
+                secret_key = None
+            with st.spinner("Searching public sources and preparing an evidence-led answer…"):
+                try:
+                    answer = research_with_ai(research_question, api_key=secret_key or os.getenv("OPENAI_API_KEY"))
+                    st.session_state["latest_ai_research_question"] = research_question
+                    st.session_state["latest_ai_research_answer"] = answer
+                except RuntimeError as exc:
+                    st.warning(str(exc))
+                    st.markdown("**To enable AI search:** add an OpenAI API key as OPENAI_API_KEY in your Streamlit deployment's Secrets settings, or set it as an environment variable when hosting the app. Keep the key private; never paste it into app.py or commit it to GitHub.")
+                except Exception as exc:
+                    st.error(f"The research request did not complete: {exc}")
+                    st.caption("Check the API key, account access and network configuration, then retry.")
+    if st.session_state.get("latest_ai_research_answer"):
+        st.markdown("---")
+        st.subheader("Research results")
+        st.markdown(f"**Question:** {st.session_state.get('latest_ai_research_question', '')}")
+        st.markdown(st.session_state["latest_ai_research_answer"])
+        st.caption("AI-generated research can contain errors. Check linked primary sources before making investment, property, legal or policy decisions.")
+
 
 st.markdown("---")
 st.caption("Sri Lanka Economic Intelligence · Research and educational use · Always verify important claims against the linked primary sources.")
