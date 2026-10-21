@@ -26,6 +26,8 @@ jobs:
           pip install -r requirements.txt
       - name: Compile Python files
         run: python -m compileall -q app.py data_utils.py api tests
+      - name: Check frontend JavaScript syntax
+        run: node --check script.js && node --check api-client.js
       - name: Run unit, API and Streamlit app tests
         env:
           PYTHONPATH: .
