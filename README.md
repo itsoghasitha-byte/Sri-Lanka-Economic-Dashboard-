@@ -10,6 +10,11 @@ A portfolio project built with **Python, Streamlit, Pandas, Plotly and pytest**.
 - CSV uploader for exploring other public statistics.
 - CSV validation helpers and automated pytest tests.
 - AI research studio for web-grounded analysis of Sri Lankan finance, real estate, development and India–Sri Lanka business cooperation (requires an OpenAI API key).
+- FastAPI backend with database-backed indicator search, research history, PostgreSQL/Supabase support and a secure server-side AI research endpoint.
+- Holographic static website with a live API explorer and AI research interface.
+- Frontend security checks and API route tests in GitHub Actions.
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the Supabase, Render, GitHub Pages and secret configuration walkthrough. Hosted services still require setup in your own provider accounts.
 - GitHub Actions workflow for running tests on pushes and pull requests.
 
 ## Data sources
