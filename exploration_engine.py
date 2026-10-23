@@ -59,9 +59,10 @@ def angle_threshold_events(vectors: Iterable[Sequence[float]], threshold_degrees
     """Report adjacent vector pairs whose turn angle meets/exceeds threshold."""
     if not 0.0 <= float(threshold_degrees) <= 180.0:
         raise ValueError("threshold_degrees must be between 0 and 180")
-    values = [(float(v[0]), float(v[1])) for v in vectors]
-    if any(len(v) != 2 for v in vectors):
+    raw_vectors = list(vectors)
+    if any(len(v) != 2 for v in raw_vectors):
         raise ValueError("vectors must each contain exactly two coordinates")
+    values = [(float(v[0]), float(v[1])) for v in raw_vectors]
     events: list[dict[str, float | int]] = []
     for index in range(1, len(values)):
         if hypot(*values[index - 1]) == 0 or hypot(*values[index]) == 0:
