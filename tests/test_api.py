@@ -20,7 +20,8 @@ def test_health_and_seed_data(monkeypatch, tmp_path):
     assert response.json()["status"] == "ok"
     data = client.get("/api/indicators").json()
     assert data["count"] == 6
-    assert all("source_url" in row for row in data["data"])\n    assert {row["status"] for row in data["data"]} == {"official_snapshot"}
+    assert all("source_url" in row for row in data["data"])
+    assert {row["status"] for row in data["data"]} == {"official_snapshot"}
 
 
 def test_indicator_search_and_category_filter(monkeypatch, tmp_path):
