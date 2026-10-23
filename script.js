@@ -52,6 +52,27 @@
   viewport.addEventListener('focusin', stopAuto);
   viewport.addEventListener('focusout', startAuto);
 
+
+  const themeToggle = document.querySelector('#theme-toggle');
+  const savedTheme = localStorage.getItem('lanka-intel-theme');
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    const light = theme === 'light';
+    themeToggle.setAttribute('aria-pressed', String(light));
+    themeToggle.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+    themeToggle.querySelector('.theme-icon').textContent = light ? '◐' : '☼';
+    themeToggle.querySelector('.theme-label').textContent = light ? 'DARK MODE' : 'LIGHT MODE';
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute('content', light ? '#f5efe6' : '#17141f');
+  }
+  applyTheme(savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : (prefersLight ? 'light' : 'dark'));
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('lanka-intel-theme', nextTheme);
+    applyTheme(nextTheme);
+  });
+
   const menuToggle = document.querySelector('.menu-toggle');
   const nav = document.querySelector('#site-nav');
   menuToggle.addEventListener('click', () => {
