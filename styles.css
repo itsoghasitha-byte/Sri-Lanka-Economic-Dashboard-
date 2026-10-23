@@ -59,3 +59,127 @@
   .wiki-search-row > div { display: grid; }
   .wiki-update-form button { width: 100%; }
 }
+
+
+/* Lanka/Intel dual-mode palette — aubergine ink, mineral jade, saffron and iris */
+:root {
+  color-scheme: dark;
+  --bg: #17141f;
+  --panel: #211c2b;
+  --panel2: #2a2336;
+  --line: #494056;
+  --muted: #b4aabd;
+  --text: #f7f0e8;
+  --cyan: #83c7b0;
+  --blue: #e7ad72;
+  --violet: #c1a5df;
+  --accent-coral: #df8585;
+  --accent-jade: #83c7b0;
+  --accent-saffron: #e7ad72;
+  --accent-iris: #c1a5df;
+}
+html { background: var(--bg); }
+body { background: var(--bg); color: var(--text); transition: background-color .25s ease, color .25s ease; }
+.topbar { background: color-mix(in srgb, var(--bg) 88%, transparent); border-color: var(--line); }
+.brand-name span, .nav a:hover, .nav-cta span, .hero-index i { color: var(--accent-saffron); }
+.nav { color: var(--muted); }
+.nav .nav-cta { border-color: color-mix(in srgb, var(--accent-jade) 55%, transparent); }
+.holo-text, .muted-holo {
+  background: linear-gradient(112deg, var(--accent-jade) 0%, var(--accent-saffron) 46%, var(--accent-iris) 78%, var(--accent-coral) 100%);
+  color: transparent; background-clip: text; -webkit-background-clip: text;
+}
+.status-dot { background: var(--accent-jade); box-shadow: 0 0 12px color-mix(in srgb, var(--accent-jade) 60%, transparent); }
+.button-primary { color: #211c2b; background: linear-gradient(118deg, var(--accent-jade), var(--accent-saffron) 54%, var(--accent-iris)); }
+.button-quiet { color: var(--text); background: color-mix(in srgb, var(--panel) 75%, transparent); }
+.metric-card, .feature-row article, .source-card, .api-console, .preview-shell, .wiki-page-card {
+  background-color: var(--panel);
+  border-color: var(--line);
+}
+.metric-card-accent { background: linear-gradient(145deg, var(--panel), color-mix(in srgb, var(--accent-iris) 15%, var(--panel))); }
+.metric-icon, .source-symbol { color: var(--accent-saffron); }
+.metric-value, .coverage-display strong { color: var(--accent-jade); }
+.float-tag { background: color-mix(in srgb, var(--panel) 90%, transparent); border-color: var(--line); color: var(--muted); }
+.hero-art:before { background: radial-gradient(circle, color-mix(in srgb, var(--accent-iris) 24%, transparent), transparent 68%); }
+.orb-core { background: radial-gradient(circle at 33% 27%, #fff6e9 0, var(--accent-jade) 3%, #527c91 13%, #292337 34%, var(--bg) 55%, #684d77 70%, var(--accent-saffron) 73%, #30243a 79%, var(--bg) 85%); }
+.orb-ring { border-color: color-mix(in srgb, var(--accent-jade) 60%, transparent); }
+.orbit { border-color: color-mix(in srgb, var(--accent-saffron) 24%, transparent); }
+.orbit-two { border-color: color-mix(in srgb, var(--accent-iris) 24%, transparent); }
+.orbit-three { border-color: color-mix(in srgb, var(--accent-jade) 24%, transparent); }
+.wiki-update-form input, .wiki-search-row input, .api-connect-row input, .api-search-row input {
+  background: var(--panel2); color: var(--text); border-color: var(--line);
+}
+.wiki-page-content { background: var(--panel2); color: var(--text); }
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 36px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel); color: var(--text); cursor: pointer; font: 10px var(--mono);
+  letter-spacing: .06em; white-space: nowrap; transition: background .2s, border-color .2s, transform .2s;
+}
+.theme-toggle:hover { border-color: var(--accent-saffron); transform: translateY(-1px); }
+.theme-toggle .theme-icon { font-size: 15px; color: var(--accent-saffron); }
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5efe6;
+  --panel: #fffaf2;
+  --panel2: #eee5f0;
+  --line: #d7c9d6;
+  --muted: #6f6477;
+  --text: #30283b;
+  --cyan: #356d60;
+  --blue: #a45d36;
+  --violet: #7b6195;
+  --accent-coral: #b94e57;
+  --accent-jade: #356d60;
+  --accent-saffron: #a45d36;
+  --accent-iris: #7b6195;
+}
+html[data-theme="light"] body { background: var(--bg); color: var(--text); }
+html[data-theme="light"] .topbar { background: color-mix(in srgb, var(--bg) 91%, transparent); border-color: var(--line); }
+html[data-theme="light"] .nav { color: #6f6477; }
+html[data-theme="light"] .nav .nav-cta { color: var(--text); border-color: #b6a3b9; }
+html[data-theme="light"] .hero-lede,
+html[data-theme="light"] .sources-inner>div:first-child>p,
+html[data-theme="light"] .final-cta>p,
+html[data-theme="light"] .section-heading>p { color: #6f6477; }
+html[data-theme="light"] .eyebrow { color: #786b80; }
+html[data-theme="light"] .hero-footnote,
+html[data-theme="light"] .hero-index,
+html[data-theme="light"] .tag-bottom small,
+html[data-theme="light"] .float-tag { color: #6f6477; }
+html[data-theme="light"] .float-tag { background: #fffaf2e8; border-color: #d7c9d6; }
+html[data-theme="light"] .tag-bottom b { color: #30283b; }
+html[data-theme="light"] .button-quiet { color: #30283b; background: #fffaf2; }
+html[data-theme="light"] .button-primary { color: #fffaf2; }
+html[data-theme="light"] .metric-card,
+html[data-theme="light"] .feature-row article,
+html[data-theme="light"] .source-card,
+html[data-theme="light"] .api-console,
+html[data-theme="light"] .preview-shell,
+html[data-theme="light"] .wiki-page-card { background: var(--panel); border-color: var(--line); color: var(--text); }
+html[data-theme="light"] .metric-top,
+html[data-theme="light"] .metric-bottom,
+html[data-theme="light"] .source-card p,
+html[data-theme="light"] .feature-row p,
+html[data-theme="light"] .api-help,
+html[data-theme="light"] .api-results,
+html[data-theme="light"] .wiki-page-card p,
+html[data-theme="light"] .wiki-page-card span,
+html[data-theme="light"] .wiki-meta { color: #6f6477; }
+html[data-theme="light"] .metric-value,
+html[data-theme="light"] .coverage-display strong,
+html[data-theme="light"] .feature-row h3,
+html[data-theme="light"] .source-card h3 { color: #356d60; }
+html[data-theme="light"] .orb-core { background: radial-gradient(circle at 33% 27%, #fffaf2 0, #a8d4c4 4%, #719aab 14%, #e4d5e8 32%, #f5efe6 55%, #b8a0c9 70%, #d6a26f 73%, #eee5f0 80%, #f5efe6 85%); box-shadow: inset -18px -20px 44px #30283b20, 0 0 40px #7b619526, 0 0 100px #a45d361c; }
+html[data-theme="light"] .ambient-a { background: #a8d4c4; opacity: .25; }
+html[data-theme="light"] .ambient-b { background: #d6a26f; opacity: .2; }
+html[data-theme="light"] .noise { opacity: .018; }
+html[data-theme="light"] .wiki-page-content { background: #eee5f0; color: #30283b; }
+html[data-theme="light"] .wiki-sources a { color: #356d60; }
+html[data-theme="light"] .wiki-update-form input,
+html[data-theme="light"] .wiki-search-row input,
+html[data-theme="light"] .api-connect-row input,
+html[data-theme="light"] .api-search-row input { background: #fffaf2; color: #30283b; border-color: #d7c9d6; }
+html[data-theme="light"] .footer { color: #6f6477; border-color: var(--line); }
+@media (max-width: 760px) {
+  .theme-toggle { margin: 10px 0; width: 100%; justify-content: center; }
+}
