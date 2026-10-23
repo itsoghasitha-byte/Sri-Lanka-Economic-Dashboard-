@@ -56,3 +56,11 @@ The repository now includes `exploration_engine.py`, a dependency-free Python re
 - **Scope:** this raycast is a generic grid primitive, not geographic collision avoidance, official aviation routing, medical advice, or real-world navigation.
 
 The existing GitHub repository and live-demo URLs remain unchanged. Python is the implemented reference engine. C++23 with Conan/vcpkg, Rust, PHP/Symfony/Mago, and Django are not represented as integrated runtimes in this change; they should be added only as tested adapters where the project's architecture benefits from them, rather than forcing every framework into every app.
+
+
+## Lightweight image and interaction performance
+
+- Uses native browser image loading hints (`loading="lazy"`, `decoding="async"`) for non-first images to reduce off-screen work where image assets are present.
+- Supports progressive WebP delivery when an image supplies a verified `data-webp-src`; browsers can also select WebP natively through `<picture><source type="image/webp">\` with a conventional fallback.
+- Keeps responsive navigation interactions in native JavaScript rather than adding a large UI framework. Existing CSS-generated concept art remains CSS-based, avoiding extra image downloads.
+- The helper is intentionally small and does not convert or invent image assets; WebP variants must exist before a `data-webp-src` is added.
