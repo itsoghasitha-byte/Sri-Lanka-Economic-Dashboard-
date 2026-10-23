@@ -7,6 +7,24 @@ import plotly.express as px
 from data_utils import load_csv, validate_labour_data
 
 st.set_page_config(page_title="Sri Lanka Economic Snapshot", page_icon="📊", layout="wide")
+
+st.markdown("""
+<style>
+:root { color-scheme: light; }
+.stApp { background: #f4f1e8; color: #20352d; }
+[data-testid="stHeader"] { background: rgba(244,241,232,.94); }
+[data-testid="stSidebar"] { background: #e6eee5; }
+.block-container { padding-top: 2rem; max-width: 1450px; }
+h1,h2,h3 { color: #173f35 !important; letter-spacing: -.025em; }
+[data-testid="stMetric"] { background: #fffdf7; border: 1px solid #d6e0d4; border-radius: 14px; padding: 18px 20px; box-shadow: 0 5px 18px #173f350b; }
+[data-testid="stMetricLabel"] { color: #61766b !important; }
+[data-testid="stMetricValue"] { color: #16745b !important; }
+.stButton button, .stDownloadButton button { background: #176b55; color: #fffdf7; border: 1px solid #176b55; border-radius: 9px; }
+.stButton button:hover, .stDownloadButton button:hover { background: #0f5141; color: #fff; border-color: #0f5141; }
+[data-testid="stFileUploader"] { background: #fffdf7; border: 1px dashed #9bb8a6; border-radius: 12px; padding: 10px; }
+hr { border-color: #d6e0d4; }
+</style>
+""", unsafe_allow_html=True)
 st.title("🇱🇰 Sri Lanka Economic Snapshot")
 st.caption("Sri Lankan labour-market indicators from official Department of Census and Statistics publications.")
 
@@ -47,7 +65,12 @@ with left:
         title=metric,
         labels={"Period": "Reporting period", metric: metric},
     )
+    fig.update_traces(line_color="#168064", marker_color="#d18b37", line_width=3)
     fig.update_layout(
+        template="plotly_white",
+        paper_bgcolor="#fffdf7",
+        plot_bgcolor="#fffdf7",
+        font_color="#20352d",
         margin=dict(l=10, r=10, t=55, b=10),
         yaxis_title="Percent",
         xaxis_title="",
@@ -94,7 +117,7 @@ if uploaded is not None:
                     fig2 = px.line(plot_data, x="Row", y=y_cols, markers=True)
                 else:
                     fig2 = px.line(data, x=x_col, y=y_cols, markers=True)
-                fig2.update_layout(margin=dict(l=10, r=10, t=30, b=10))
+                fig2.update_traces(line_color="#168064", marker_color="#d18b37", line_width=3)\n                fig2.update_layout(template="plotly_white", paper_bgcolor="#fffdf7", plot_bgcolor="#fffdf7", font_color="#20352d", margin=dict(l=10, r=10, t=30, b=10))
                 st.plotly_chart(fig2, use_container_width=True)
             else:
                 st.caption("Select at least one numeric measure to create a chart.")
