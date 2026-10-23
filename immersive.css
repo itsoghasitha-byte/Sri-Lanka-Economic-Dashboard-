@@ -1,0 +1,21 @@
+/* Lightweight 3D-inspired interaction layer; no framework or WebGL dependency. */
+:root{--immersive-glow:rgba(124,244,255,.18)}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.immersive-card{transform-style:preserve-3d;will-change:transform;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.immersive-card:hover{box-shadow:0 22px 55px rgba(0,0,0,.24),0 0 28px var(--immersive-glow)}
+.immersive-reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.immersive-reveal.is-visible{opacity:1;transform:translateY(0)}
+.landmark-section{padding-top:clamp(44px,7vw,90px);padding-bottom:clamp(44px,7vw,90px)}
+.landmark-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,2vw,22px);perspective:1200px}
+.landmark-card{position:relative;display:block;min-height:280px;aspect-ratio:16/10;overflow:hidden;border:1px solid rgba(124,244,255,.22);border-radius:20px;background:#111923;color:inherit;text-decoration:none;isolation:isolate;transform-style:preserve-3d;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.landmark-card:hover{border-color:rgba(124,244,255,.65);box-shadow:0 24px 60px rgba(0,0,0,.3),0 0 35px rgba(124,244,255,.12)}
+.landmark-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.015);transition:transform .7s cubic-bezier(.2,.7,.2,1);z-index:-2}
+.landmark-card:hover img{transform:scale(1.07)}
+.landmark-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,10,18,.05) 10%,rgba(4,10,18,.18) 40%,rgba(4,10,18,.92) 100%);z-index:-1}
+.landmark-index{position:absolute;top:16px;left:16px;font:500 10px/1.4 'DM Mono',monospace;letter-spacing:.13em;color:#e7fbff;background:rgba(4,10,18,.55);border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:7px 10px;backdrop-filter:blur(10px)}
+.landmark-copy{position:absolute;left:clamp(16px,3vw,28px);right:clamp(16px,3vw,28px);bottom:clamp(16px,3vw,26px);transform:translateZ(24px)}
+.landmark-copy h3{margin:0 0 7px;font-size:clamp(20px,3vw,31px);letter-spacing:-.035em;color:#fff}
+.landmark-copy p{margin:0;max-width:48ch;font-size:13px;line-height:1.6;color:#e0e9f0}
+.landmark-credit{font-size:11px;line-height:1.6;opacity:.72;margin-top:14px}
+@media(max-width:620px){.landmark-grid{grid-template-columns:1fr}.landmark-card{min-height:235px;aspect-ratio:4/3}.landmark-copy h3{font-size:24px}}
