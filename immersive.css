@@ -45,3 +45,64 @@ html{scroll-behavior:smooth}
  .landmark-card:nth-child(4){animation-delay:-5.1s}
 }
 @keyframes landmarkFloat{0%,100%{translate:0 0}50%{translate:0 -5px}}
+
+
+/* Photographic Sri Lanka front page: real images replace the abstract blue orb. */
+:root{--bg:#101611;--cyan:#c7d7a0;--immersive-glow:rgba(205,184,126,.12)}
+body{background:#101611;color:#f5f2e8}
+.ambient-a,.ambient-b{opacity:.05;filter:blur(120px)}
+.hero{grid-template-columns:minmax(0,1fr) minmax(320px,.95fr);gap:clamp(24px,4vw,60px)}
+.hero-art.photo-hero{height:clamp(360px,43vw,510px);display:grid;grid-template-columns:1.08fr .92fr;grid-template-rows:1fr .86fr;gap:12px;align-content:stretch;perspective:1100px;isolation:isolate}
+.hero-art.photo-hero:before{content:none}
+.hero-photo{position:relative;display:block;min-width:0;min-height:0;overflow:hidden;border:1px solid rgba(245,242,232,.25);border-radius:15px;background:#182018;box-shadow:0 18px 36px rgba(0,0,0,.3);transform:perspective(1000px) rotateY(-2deg);transition:transform .3s ease,box-shadow .3s ease}
+.hero-photo-tower{grid-row:1/3}
+.hero-photo-coast{grid-column:2;grid-row:1}
+.hero-photo-parliament{grid-column:2;grid-row:2}
+.hero-photo-tea{display:none}
+.hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.01);transition:transform .7s cubic-bezier(.2,.7,.2,1);filter:saturate(1.04) contrast(1.03)}
+.hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,12,8,.03) 35%,rgba(7,12,8,.76) 100%);pointer-events:none}
+.hero-photo span{position:absolute;z-index:1;left:13px;right:13px;bottom:13px;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#fff;font:10px var(--mono);letter-spacing:.12em;text-shadow:0 1px 8px #000}
+.hero-photo span b{font-weight:400;color:#f1d7a0}
+.hero-photo:hover{transform:perspective(1000px) rotateY(0) translateY(-4px);box-shadow:0 26px 48px rgba(0,0,0,.4)}
+.hero-photo:hover img{transform:scale(1.07)}
+.photo-hero-caption{position:absolute;left:10px;bottom:-31px;display:flex;align-items:center;gap:8px;color:#c5cbb7;font:9px var(--mono);letter-spacing:.1em}
+.photo-hero-caption small{color:#818a78;font-size:8px;margin-left:4px}
+.hero-art .float-tag,.hero-art .orb-core,.hero-art .orbit,.hero-art .crosshair{display:none!important}
+.hero-art.photo-hero .hero-photo-tea{display:block}
+.landmark-section{padding-top:clamp(28px,5vw,60px);background:linear-gradient(180deg,rgba(30,37,25,.25),transparent)}
+.landmark-grid{gap:clamp(12px,2vw,22px)}
+.landmark-card{background:#172018;border-color:rgba(225,211,165,.2)}
+.landmark-card:after{background:linear-gradient(180deg,rgba(4,10,6,.02) 5%,rgba(4,10,6,.08) 38%,rgba(4,10,6,.86) 100%)}
+@media(max-width:900px){
+ .hero{grid-template-columns:1fr;min-height:auto;padding-top:64px;padding-bottom:75px}
+ .hero-copy{padding-bottom:4px}
+ .hero-art.photo-hero{height:clamp(330px,70vw,490px);width:100%;max-width:680px;margin:0 auto 12px}
+ .hero-index{bottom:16px}
+}
+@media(max-width:620px){
+ .section-shell{width:calc(100% - 30px)}
+ .topbar{height:68px;padding:0 15px}
+ .hero{padding-top:38px;gap:22px}
+ .hero h1{font-size:clamp(42px,11vw,62px);margin:18px 0}
+ .hero-lede{font-size:14px;line-height:1.75}
+ .hero-art.photo-hero{height:350px;grid-template-columns:1fr 1fr;grid-template-rows:1.08fr .8fr;gap:8px}
+ .hero-photo{border-radius:11px;transform:none}
+ .hero-photo-tower{grid-column:1;grid-row:1}
+ .hero-photo-coast{grid-column:2;grid-row:1}
+ .hero-photo-parliament{grid-column:1;grid-row:2}
+ .hero-photo-tea{grid-column:2;grid-row:2}
+ .hero-photo span{left:9px;right:9px;bottom:9px;font-size:8px;letter-spacing:.06em}
+ .photo-hero-caption{bottom:-27px;font-size:8px;letter-spacing:.04em}
+ .photo-hero-caption small{font-size:7px}
+ .landmark-grid{grid-template-columns:1fr}
+ .landmark-card{min-height:245px;aspect-ratio:4/3}
+ .section-heading{align-items:flex-start;flex-direction:column;gap:14px}
+ .metric-grid{grid-template-columns:1fr}
+}
+@media(min-width:621px) and (max-width:900px){
+ .hero-art.photo-hero{grid-template-columns:1.1fr .9fr;grid-template-rows:1fr .9fr}
+ .hero-photo-tea{display:block}
+ .hero-photo-tower{grid-row:1/3}
+ .hero-photo-coast{grid-column:2;grid-row:1}
+ .hero-photo-parliament{grid-column:2;grid-row:2}
+}
